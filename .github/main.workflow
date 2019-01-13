@@ -7,5 +7,5 @@ workflow "Build and Push" {
 
 action "Build Docker image" {
   uses = "docker://docker:stable"
-  args = ["make", "image"]
+  args = ["hack/build.sh"]
 }
