@@ -1,4 +1,4 @@
-IMAGE := superbrothers/devbox
+IMAGE := yuanying/devbox
 
 .PHONY: image
 image:
