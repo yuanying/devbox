@@ -7,6 +7,5 @@ exec docker run \
     -it \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -w /home/dev \
-    --net host \
-    yuanying/devbox \
-    /bin/bash --login
+    -p 3222:3222 \
+    yuanying/devbox
