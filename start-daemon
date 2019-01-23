@@ -4,8 +4,12 @@ set -e
 
 exec docker run \
     --rm \
+    -d \
     -it \
     -v /var/run/docker.sock:/var/run/docker.sock \
+    -v /home/$USER/go/src:/home/dev/src \
+    -v /home/$USER/secrets:/home/dev/secrets \
     -w /home/dev \
     -p 3222:3222 \
+    -p 60000-60010:60000-60010/udp \
     yuanying/devbox

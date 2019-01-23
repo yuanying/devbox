@@ -13,4 +13,7 @@ export EDITOR=vim
 export GOPATH="$HOME"
 export GHQ_ROOT="$HOME/src"
 
+git clone https://github.com/yuanying/dotfiles ~/dotfiles
+bash dotfiles/bin/setup.sh
+
 sudo /usr/sbin/sshd -D

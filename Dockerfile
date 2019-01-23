@@ -1,3 +1,16 @@
+ARG GOLANG_VERSION=1.11.4
+
+# install kubectl
+FROM ubuntu:18.04 as kubectl_builder
+RUN apt-get update && apt-get install -y curl ca-certificates
+RUN curl -L -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+RUN chmod 755 /usr/local/bin/kubectl
+
+# install 1password
+FROM ubuntu:18.04 as onepassword_builder
+RUN apt-get update && apt-get install -y curl ca-certificates unzip
+RUN curl -sS -o 1password.zip https://cache.agilebits.com/dist/1P/op/pkg/v0.5.5/op_linux_amd64_v0.5.5.zip && unzip 1password.zip op -d /usr/bin &&  rm 1password.zip
+
 # install vim plugins
 FROM ubuntu:18.04 as vim_plugins_builder
 RUN apt-get update && apt-get install -y git ca-certificates
@@ -101,6 +114,7 @@ RUN set -x -e && \
         ca-certificates \
         openssh-server \
         mosh \
+        tmux \
         wget
 
 ENV LANG="en_US.UTF-8"
@@ -159,6 +173,15 @@ COPY --from=vim_plugins_builder /root/.vim/plugged $HOME/.vim/plugged
 # zsh plugins
 RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh/zsh-syntax-highlighting
 RUN git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
+
+# kubectl
+COPY --from=kubectl_builder /usr/local/bin/kubectl /usr/local/bin/
+
+# onepassword
+COPY --from=onepassword_builder /usr/bin/op /usr/local/bin/
+
+RUN mkdir -p $HOME/secrets
+COPY pull-secrets.sh $HOME/secrets/pull-secrets.sh
 
 COPY entrypoint.sh /bin/entrypoint.sh
 CMD ["/bin/entrypoint.sh"]
