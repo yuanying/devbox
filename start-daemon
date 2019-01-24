@@ -11,6 +11,7 @@ exec docker run \
     -v /home/$USER/go/src:/home/dev/src \
     -v /home/$USER/secrets:/home/dev/secrets \
     -v /home/$USER/.kube:/home/dev/.kube \
+    -v /home/$USER/temp/.zsh_history:/home/dev/.zsh_history \
     -w /home/dev \
     -p 3222:3222 \
     -p 60000-60010:60000-60010/udp \
