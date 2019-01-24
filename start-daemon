@@ -5,6 +5,7 @@ set -e
 exec docker run \
     --rm \
     -d \
+    --name devbox \
     -it \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v /home/$USER/go/src:/home/dev/src \
