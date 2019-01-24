@@ -10,8 +10,8 @@ echo "Pulling secrets"
 op get document 'github_rsa' > github_rsa
 op get document 'zsh_private' > zsh_private
 
-rm ~/.ssh/github_rsa
-rm ~/.zsh_private
+rm -f ~/.ssh/github_rsa
+rm -f ~/.zsh_private
 
 ln -s $(pwd)/github_rsa ~/.ssh/github_rsa
 chmod 0600 ~/.ssh/github_rsa
