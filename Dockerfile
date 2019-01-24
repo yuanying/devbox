@@ -1,5 +1,12 @@
 ARG GOLANG_VERSION=1.11.4
 
+# install tmux plugins
+FROM ubuntu:18.04 as tmux_plugins_builder
+
+RUN apt-get update && apt-get install -y git ca-certificates
+RUN mkdir -p /root/.tmux/plugins && cd /root/.tmux/plugins && \
+    git clone https://github.com/jonmosco/kube-tmux
+
 # install kubectl
 FROM ubuntu:18.04 as kubectl_builder
 RUN apt-get update && apt-get install -y curl ca-certificates
@@ -173,6 +180,9 @@ COPY --from=vim_plugins_builder /root/.vim/plugged $HOME/.vim/plugged
 # zsh plugins
 RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh/zsh-syntax-highlighting
 RUN git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
+
+# tmux plugins
+COPY --from=tmux_plugins_builder /root/.tmux/plugins $HOME/.tmux/plugins
 
 # kubectl
 COPY --from=kubectl_builder /usr/local/bin/kubectl /usr/local/bin/
