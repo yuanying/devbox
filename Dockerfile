@@ -145,7 +145,7 @@ RUN set -x -e && \
     apt-get update && \
     apt-get -y install sudo && \
     groupadd -g 999 docker && \
-    useradd -G docker -m -s /bin/bash  -u 501 "$USER" && \
+    useradd -G docker -g 50 -m -s /bin/bash  -u 501 "$USER" && \
     echo "$USER ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 USER "$USER"
