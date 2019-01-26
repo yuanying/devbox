@@ -24,67 +24,67 @@ RUN curl -sS -o 1password.zip https://cache.agilebits.com/dist/1P/op/pkg/v0.5.5/
 FROM ubuntu:18.04 as vim_plugins_builder
 RUN apt-get update && apt-get install -y git ca-certificates
 RUN mkdir -p /root/.vim/plugged && cd /root/.vim/plugged && \
-   git clone 'https://github.com/airblade/vim-gitgutter' &&
-   git clone 'https://github.com/cespare/vim-toml' &&
-   git clone 'https://github.com/chakrit/upstart.vim' &&
-   git clone 'https://github.com/cohama/vim-hier' &&
-   git clone 'https://github.com/dannyob/quickfixstatus' &&
-   git clone 'https://github.com/editorconfig/editorconfig-vim' &&
-   git clone 'https://github.com/ekalinin/Dockerfile.vim' &&
-   git clone 'https://github.com/elzr/vim-json' &&
-   git clone 'https://github.com/fatih/molokai' &&
-   git clone 'https://github.com/fatih/vim-go' &&
-   git clone 'https://github.com/fholgado/minibufexpl.vim' &&
-   git clone 'https://github.com/godlygeek/tabular' &&
-   git clone 'https://github.com/google/vim-ft-go' &&
-   git clone 'https://github.com/google/vim-jsonnet' &&
-   git clone 'https://github.com/hail2u/vim-css3-syntax' &&
-   git clone 'https://github.com/heavenshell/vim-jsdoc' &&
-   git clone 'https://github.com/itchyny/lightline.vim' &&
-   git clone 'https://github.com/junegunn/vim-emoji' &&
-   git clone 'https://github.com/junegunn/vim-plug' &&
-   git clone 'https://github.com/justmao945/vim-clang' &&
-   git clone 'https://github.com/majutsushi/tagbar' &&
-   git clone 'https://github.com/mattn/gist-vim' &&
-   git clone 'https://github.com/mattn/vim-maketable' &&
-   git clone 'https://github.com/mattn/webapi-vim' &&
-   git clone 'https://github.com/miyakogi/seiya.vim' &&
-   git clone 'https://github.com/moll/vim-node' &&
-   git clone 'https://github.com/mrtazz/simplenote.vim' &&
-   git clone 'https://github.com/mxw/vim-jsx' &&
-   git clone 'https://github.com/myhere/vim-nodejs-complete' &&
-   git clone 'https://github.com/noahfrederick/vim-skeleton' &&
-   git clone 'https://github.com/osyo-manga/shabadou.vim' &&
-   git clone 'https://github.com/osyo-manga/vim-watchdogs' &&
-   git clone 'https://github.com/othree/eregex.vim' &&
-   git clone 'https://github.com/pangloss/vim-javascript' &&
-   git clone 'https://github.com/pix/vim-align' &&
-   git clone 'https://github.com/plasticboy/vim-markdown' &&
-   git clone 'https://github.com/qpkorr/vim-renamer' &&
-   git clone 'https://github.com/rafi/vim-unite-issue' &&
-   git clone 'https://github.com/scrooloose/nerdcommenter' &&
-   git clone 'https://github.com/scrooloose/nerdtree' &&
-   git clone 'https://github.com/Shougo/context_filetype.vim' &&
-   git clone 'https://github.com/Shougo/neomru.vim' &&
-   git clone 'https://github.com/Shougo/neosnippet' &&
-   git clone 'https://github.com/Shougo/neosnippet-snippets' &&
-   git clone 'https://github.com/Shougo/unite-outline' &&
-   git clone 'https://github.com/Shougo/unite.vim' &&
-   git clone 'https://github.com/Shougo/vimproc.vim' &&
-   git clone 'https://github.com/superbrothers/vim-bclose' &&
-   git clone 'https://github.com/thinca/vim-quickrun' &&
-   git clone 'https://github.com/tpope/vim-fugitive' &&
-   git clone 'https://github.com/tpope/vim-haml' &&
-   git clone 'https://github.com/tpope/vim-rails' &&
-   git clone 'https://github.com/tyru/open-browser.vim' &&
-   git clone 'https://github.com/ujihisa/unite-colorscheme' &&
-   git clone 'https://github.com/vim-ruby/vim-ruby' &&
-   git clone 'https://github.com/vim-scripts/jade.vim' &&
-   git clone 'https://github.com/vim-scripts/sudo.vim' &&
-   git clone 'https://github.com/vim-scripts/ViewOutput' &&
-   git clone 'https://github.com/vim-scripts/YankRing.vim' &&
-   git clone 'https://github.com/Xuyuanp/nerdtree-git-plugin' &&
-   git clone 'https://github.com/yegappan/grep' &&
+   git clone 'https://github.com/airblade/vim-gitgutter' && \
+   git clone 'https://github.com/cespare/vim-toml' && \
+   git clone 'https://github.com/chakrit/upstart.vim' && \
+   git clone 'https://github.com/cohama/vim-hier' && \
+   git clone 'https://github.com/dannyob/quickfixstatus' && \
+   git clone 'https://github.com/editorconfig/editorconfig-vim' && \
+   git clone 'https://github.com/ekalinin/Dockerfile.vim' && \
+   git clone 'https://github.com/elzr/vim-json' && \
+   git clone 'https://github.com/fatih/molokai' && \
+   git clone 'https://github.com/fatih/vim-go' && \
+   git clone 'https://github.com/fholgado/minibufexpl.vim' && \
+   git clone 'https://github.com/godlygeek/tabular' && \
+   git clone 'https://github.com/google/vim-ft-go' && \
+   git clone 'https://github.com/google/vim-jsonnet' && \
+   git clone 'https://github.com/hail2u/vim-css3-syntax' && \
+   git clone 'https://github.com/heavenshell/vim-jsdoc' && \
+   git clone 'https://github.com/itchyny/lightline.vim' && \
+   git clone 'https://github.com/junegunn/vim-emoji' && \
+   git clone 'https://github.com/junegunn/vim-plug' && \
+   git clone 'https://github.com/justmao945/vim-clang' && \
+   git clone 'https://github.com/majutsushi/tagbar' && \
+   git clone 'https://github.com/mattn/gist-vim' && \
+   git clone 'https://github.com/mattn/vim-maketable' && \
+   git clone 'https://github.com/mattn/webapi-vim' && \
+   git clone 'https://github.com/miyakogi/seiya.vim' && \
+   git clone 'https://github.com/moll/vim-node' && \
+   git clone 'https://github.com/mrtazz/simplenote.vim' && \
+   git clone 'https://github.com/mxw/vim-jsx' && \
+   git clone 'https://github.com/myhere/vim-nodejs-complete' && \
+   git clone 'https://github.com/noahfrederick/vim-skeleton' && \
+   git clone 'https://github.com/osyo-manga/shabadou.vim' && \
+   git clone 'https://github.com/osyo-manga/vim-watchdogs' && \
+   git clone 'https://github.com/othree/eregex.vim' && \
+   git clone 'https://github.com/pangloss/vim-javascript' && \
+   git clone 'https://github.com/pix/vim-align' && \
+   git clone 'https://github.com/plasticboy/vim-markdown' && \
+   git clone 'https://github.com/qpkorr/vim-renamer' && \
+   git clone 'https://github.com/rafi/vim-unite-issue' && \
+   git clone 'https://github.com/scrooloose/nerdcommenter' && \
+   git clone 'https://github.com/scrooloose/nerdtree' && \
+   git clone 'https://github.com/Shougo/context_filetype.vim' && \
+   git clone 'https://github.com/Shougo/neomru.vim' && \
+   git clone 'https://github.com/Shougo/neosnippet' && \
+   git clone 'https://github.com/Shougo/neosnippet-snippets' && \
+   git clone 'https://github.com/Shougo/unite-outline' && \
+   git clone 'https://github.com/Shougo/unite.vim' && \
+   git clone 'https://github.com/Shougo/vimproc.vim' && \
+   git clone 'https://github.com/superbrothers/vim-bclose' && \
+   git clone 'https://github.com/thinca/vim-quickrun' && \
+   git clone 'https://github.com/tpope/vim-fugitive' && \
+   git clone 'https://github.com/tpope/vim-haml' && \
+   git clone 'https://github.com/tpope/vim-rails' && \
+   git clone 'https://github.com/tyru/open-browser.vim' && \
+   git clone 'https://github.com/ujihisa/unite-colorscheme' && \
+   git clone 'https://github.com/vim-ruby/vim-ruby' && \
+   git clone 'https://github.com/vim-scripts/jade.vim' && \
+   git clone 'https://github.com/vim-scripts/sudo.vim' && \
+   git clone 'https://github.com/vim-scripts/ViewOutput' && \
+   git clone 'https://github.com/vim-scripts/YankRing.vim' && \
+   git clone 'https://github.com/Xuyuanp/nerdtree-git-plugin' && \
+   git clone 'https://github.com/yegappan/grep' && \
    git clone 'https://github.com/Yggdroot/indentLine'
 
 # install linux brew
