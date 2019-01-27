@@ -229,6 +229,7 @@ COPY --from=onepassword_builder /usr/bin/op /usr/local/bin/
 
 RUN mkdir -p $HOME/secrets
 COPY pull-secrets.sh $HOME/secrets/pull-secrets.sh
+COPY link-secrets.sh $HOME/secrets/link-secrets.sh
 
 COPY entrypoint.sh /bin/entrypoint.sh
 CMD ["/bin/entrypoint.sh"]
