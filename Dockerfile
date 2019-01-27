@@ -222,6 +222,7 @@ COPY --from=tmux_plugins_builder /root/.tmux/plugins $HOME/.tmux/plugins
 
 # kubectl
 COPY --from=kubectl_builder /usr/local/bin/kubectl /usr/local/bin/
+COPY --from=kubectl_builder /usr/local/bin/kustomize /usr/local/bin/
 
 # onepassword
 COPY --from=onepassword_builder /usr/bin/op /usr/local/bin/
