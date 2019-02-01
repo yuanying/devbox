@@ -28,6 +28,7 @@ RUN mkdir -p /root/.vim/plugged && cd /root/.vim/plugged && \
    git clone 'https://github.com/cespare/vim-toml' && \
    git clone 'https://github.com/chakrit/upstart.vim' && \
    git clone 'https://github.com/cohama/vim-hier' && \
+   git clone 'https://github.com/ctrlpvim/ctrlp.vim' && \
    git clone 'https://github.com/dannyob/quickfixstatus' && \
    git clone 'https://github.com/editorconfig/editorconfig-vim' && \
    git clone 'https://github.com/ekalinin/Dockerfile.vim' && \
@@ -45,6 +46,7 @@ RUN mkdir -p /root/.vim/plugged && cd /root/.vim/plugged && \
    git clone 'https://github.com/junegunn/vim-plug' && \
    git clone 'https://github.com/justmao945/vim-clang' && \
    git clone 'https://github.com/majutsushi/tagbar' && \
+   git clone 'https://github.com/mattn/ctrlp-ghq' && \
    git clone 'https://github.com/mattn/gist-vim' && \
    git clone 'https://github.com/mattn/vim-maketable' && \
    git clone 'https://github.com/mattn/webapi-vim' && \
