@@ -8,7 +8,7 @@ exec docker run \
     --name devbox \
     -it \
     -v /var/run/docker.sock:/var/run/docker.sock \
-    -v /home/$USER/go/src:/home/dev/src \
+    -v /home/$USER/src:/home/dev/src \
     -v /home/$USER/secrets:/home/dev/secrets \
     -v /home/$USER/.kube:/home/dev/.kube \
     -v /home/$USER/temp/.zsh_history:/home/dev/.zsh_history \
