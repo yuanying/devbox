@@ -214,6 +214,7 @@ ENV GHQ_ROOT="$HOME/src"
 RUN curl -fLo ~/.vim/autoload/plug.vim \
     --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 COPY --from=vim_plugins_builder /root/.vim/plugged $HOME/.vim/plugged
+RUN sudo chown -R $USER:staff $HOME/.vim/plugged
 
 # zsh plugins
 RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh/zsh-syntax-highlighting
@@ -221,6 +222,7 @@ RUN git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosu
 
 # tmux plugins
 COPY --from=tmux_plugins_builder /root/.tmux/plugins $HOME/.tmux/plugins
+RUN sudo chown -R $USER:staff $HOME/.tmux/plugins
 
 # kubectl
 COPY --from=kubectl_builder /usr/local/bin/kubectl /usr/local/bin/
