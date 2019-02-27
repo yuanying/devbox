@@ -26,7 +26,6 @@ RUN apt-get update && apt-get install -y git ca-certificates
 RUN mkdir -p /root/.vim/plugged && cd /root/.vim/plugged && \
    git clone 'https://github.com/airblade/vim-gitgutter' && \
    git clone 'https://github.com/cespare/vim-toml' && \
-   git clone 'https://github.com/chakrit/upstart.vim' && \
    git clone 'https://github.com/cohama/vim-hier' && \
    git clone 'https://github.com/ctrlpvim/ctrlp.vim' && \
    git clone 'https://github.com/dannyob/quickfixstatus' && \
@@ -38,7 +37,6 @@ RUN mkdir -p /root/.vim/plugged && cd /root/.vim/plugged && \
    git clone 'https://github.com/fholgado/minibufexpl.vim' && \
    git clone 'https://github.com/godlygeek/tabular' && \
    git clone 'https://github.com/google/vim-ft-go' && \
-   git clone 'https://github.com/google/vim-jsonnet' && \
    git clone 'https://github.com/hail2u/vim-css3-syntax' && \
    git clone 'https://github.com/heavenshell/vim-jsdoc' && \
    git clone 'https://github.com/itchyny/lightline.vim' && \
@@ -76,12 +74,9 @@ RUN mkdir -p /root/.vim/plugged && cd /root/.vim/plugged && \
    git clone 'https://github.com/superbrothers/vim-bclose' && \
    git clone 'https://github.com/thinca/vim-quickrun' && \
    git clone 'https://github.com/tpope/vim-fugitive' && \
-   git clone 'https://github.com/tpope/vim-haml' && \
-   git clone 'https://github.com/tpope/vim-rails' && \
    git clone 'https://github.com/tyru/open-browser.vim' && \
    git clone 'https://github.com/ujihisa/unite-colorscheme' && \
    git clone 'https://github.com/vim-ruby/vim-ruby' && \
-   git clone 'https://github.com/vim-scripts/jade.vim' && \
    git clone 'https://github.com/vim-scripts/sudo.vim' && \
    git clone 'https://github.com/vim-scripts/ViewOutput' && \
    git clone 'https://github.com/vim-scripts/YankRing.vim' && \
@@ -140,7 +135,8 @@ RUN set -x && brew install peco
 RUN set -x && brew install ghq
 RUN set -x && brew install go
 RUN set -x && brew install node
-RUN set -x && brew install screen
+RUN set -x && brew install ruby
+RUN set -x && brew install python
 RUN set -x && brew install jq
 RUN set -x && brew install dep
 
@@ -162,6 +158,7 @@ RUN set -x -e && \
         tmux \
         iputils-ping \
         net-tools \
+        strace \
         wget
 
 ENV LANG="en_US.UTF-8"
