@@ -191,6 +191,7 @@ ENV HOME="/home/$USER"
 ENV PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:$PATH"
 # linuxbrew
 COPY --from=linuxbrew_installer /home/linuxbrew /home/linuxbrew
+RUN sudo chown -R $USER:staff /home/linuxbrew
 
 # Install go tools
 ENV GOPATH="/go"
