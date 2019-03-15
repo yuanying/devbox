@@ -13,6 +13,8 @@ exec docker run \
     -v /home/$USER/secrets:/home/dev/secrets \
     -v /home/$USER/.kube:/home/dev/.kube \
     -v /home/$USER/temp/.zsh_history:/home/dev/.zsh_history \
+    -v /home/$USER/.rbenv:/home/dev/.rbenv \
+    -v /home/$USER/.pyenv:/home/dev/.pyenv \
     -w /home/dev \
     -p 3222:3222 \
     -p 60000-60010:60000-60010/udp \

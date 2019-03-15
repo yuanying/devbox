@@ -135,10 +135,10 @@ RUN set -x && brew install peco
 RUN set -x && brew install ghq
 RUN set -x && brew install go
 RUN set -x && brew install node
-RUN set -x && brew install ruby
-RUN set -x && brew install python
 RUN set -x && brew install jq
 RUN set -x && brew install dep
+RUN set -x && brew install rbenv
+RUN set -x && brew install pyenv-virtualenv
 
 FROM ubuntu:18.04
 
@@ -215,6 +215,7 @@ RUN curl -fLo ~/.vim/autoload/plug.vim \
     --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 COPY --from=vim_plugins_builder /root/.vim/plugged $HOME/.vim/plugged
 RUN sudo chown -R $USER:staff $HOME/.vim
+RUN cd /home/dev/.vim/plugged/vimproc.vim && make
 
 # zsh plugins
 RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh/zsh-syntax-highlighting
