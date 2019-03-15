@@ -2,6 +2,12 @@
 
 set -e
 
+mkdir -p /home/$USER/temp
+touch /home/$USER/temp/.zsh_history
+mkdir -p /home/$USER/.rbenv
+mkdir -p /home/$USER/.pyenv
+mkdir -p /home/$USER/secrets
+
 exec docker run \
     --rm \
     -d \

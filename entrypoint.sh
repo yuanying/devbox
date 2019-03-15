@@ -13,6 +13,10 @@ export EDITOR=vim
 export GOPATH="$HOME"
 export GHQ_ROOT="$HOME/src"
 
+mkdir -p ~/secrets
+cp ~/bin/*-secrets.sh ~/secrets/
+bash ~/secrets/link-secrets.sh
+
 git clone https://github.com/yuanying/dotfiles ~/dotfiles
 bash dotfiles/bin/setup.sh
 

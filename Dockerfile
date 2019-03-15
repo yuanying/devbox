@@ -159,7 +159,9 @@ RUN set -x -e && \
         iputils-ping \
         net-tools \
         strace \
-        wget
+        wget \
+        zlib1g-dev \
+        libffi-dev
 
 ENV LANG="en_US.UTF-8"
 ENV LC_ALL="en_US.UTF-8"
@@ -232,9 +234,15 @@ COPY --from=kubectl_builder /usr/local/bin/kustomize /usr/local/bin/
 # onepassword
 COPY --from=onepassword_builder /usr/bin/op /usr/local/bin/
 
-RUN mkdir -p $HOME/secrets
-COPY pull-secrets.sh $HOME/secrets/pull-secrets.sh
-COPY link-secrets.sh $HOME/secrets/link-secrets.sh
+RUN mkdir -p $HOME/bin
+COPY pull-secrets.sh $HOME/bin/pull-secrets.sh
+COPY link-secrets.sh $HOME/bin/link-secrets.sh
+RUN git clone https://github.com/ahmetb/kubectx.git ~/.kubectx && \
+    cp ~/.kubectx/kubectx ~/bin/ && chmod +x ~/bin/kubectx && \
+    cp ~/.kubectx/kubens ~/bin/ && chmod +x ~/bin/kubens && \
+    mkdir -p ~/.zsh/zsh-completions && \
+    ln -sf ~/.kubectx/completion/kubectx.zsh /home/linuxbrew/.linuxbrew/share/zsh/site-functions/_kubectx && \
+    ln -sf ~/.kubectx/completion/kubens.zsh /home/linuxbrew/.linuxbrew/share/zsh/site-functions/_kubens
 
 COPY entrypoint.sh /bin/entrypoint.sh
 CMD ["/bin/entrypoint.sh"]
