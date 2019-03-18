@@ -161,7 +161,10 @@ RUN set -x -e && \
         strace \
         wget \
         zlib1g-dev \
-        libffi-dev
+        libffi-dev \
+        libbz2-dev \
+        libreadline-dev \
+        libsqlite3-dev
 
 ENV LANG="en_US.UTF-8"
 ENV LC_ALL="en_US.UTF-8"
