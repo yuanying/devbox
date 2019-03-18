@@ -12,8 +12,14 @@ FROM ubuntu:18.04 as kubectl_builder
 RUN apt-get update && apt-get install -y curl ca-certificates
 RUN curl -L -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
 RUN chmod 755 /usr/local/bin/kubectl
+
 RUN curl -L -o /usr/local/bin/kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v2.0.3/kustomize_2.0.3_linux_amd64
 RUN chmod 755 /usr/local/bin/kustomize
+
+ENV ETCD_VER v3.2.26
+ENV DOWNLOAD_URL=https://storage.googleapis.com/etcd
+RUN curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz && \
+    tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /usr/local/bin --strip-components=1
 
 # install 1password
 FROM ubuntu:18.04 as onepassword_builder
@@ -140,7 +146,7 @@ RUN set -x && brew install dep
 RUN set -x && brew install rbenv
 RUN set -x && brew install pyenv-virtualenv
 
-FROM ubuntu:18.04
+FROM ubuntu:18.04 as main
 
 # Install build-essential etc
 RUN set -x -e && \
@@ -232,6 +238,7 @@ RUN sudo chown -R $USER:staff $HOME/.tmux
 # kubectl
 COPY --from=kubectl_builder /usr/local/bin/kubectl /usr/local/bin/
 COPY --from=kubectl_builder /usr/local/bin/kustomize /usr/local/bin/
+COPY --from=kubectl_builder /usr/local/bin/etcdctl /usr/local/bin/
 
 # onepassword
 COPY --from=onepassword_builder /usr/bin/op /usr/local/bin/

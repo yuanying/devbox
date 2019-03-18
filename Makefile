@@ -8,4 +8,4 @@ image:
 			--target onepassword_builder -t $(IMAGE):op \
 			--target vim_plugins_builder -t $(IMAGE):vim \
 			--target linuxbrew_installer -t $(IMAGE):brew \
-			-t $(IMAGE) .
+			--target main -t $(IMAGE) .
