@@ -1,4 +1,4 @@
-ARG GOLANG_VERSION=1.11.4
+ARG GOLANG_VERSION=1.12.1
 
 # install tmux plugins
 FROM ubuntu:18.04 as tmux_plugins_builder
