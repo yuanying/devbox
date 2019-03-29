@@ -9,11 +9,14 @@ RUN mkdir -p /root/.tmux/plugins && cd /root/.tmux/plugins && \
 
 # install kubectl
 FROM ubuntu:18.04 as kubectl_builder
+
+ENV KUBE_VER v1.14.0
 RUN apt-get update && apt-get install -y curl ca-certificates
-RUN curl -L -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+RUN curl -L -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBE_VER}/bin/linux/amd64/kubectl
 RUN chmod 755 /usr/local/bin/kubectl
 
-RUN curl -L -o /usr/local/bin/kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v2.0.3/kustomize_2.0.3_linux_amd64
+ENV KUSTOMIZE_VER 2.0.3
+RUN curl -L -o /usr/local/bin/kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v${KUSTOMIZE_VER}/kustomize_${KUSTOMIZE_VER}_linux_amd64
 RUN chmod 755 /usr/local/bin/kustomize
 
 ENV ETCD_VER v3.2.26
