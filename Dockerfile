@@ -21,6 +21,11 @@ ENV DOWNLOAD_URL=https://storage.googleapis.com/etcd
 RUN curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz && \
     tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /usr/local/bin --strip-components=1
 
+ENV HELM_VER v2.13.0
+RUN curl -L https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VER}-linux-amd64.tar.gz -o /tmp/helm.tar.gz && \
+    tar xzvf /tmp/helm.tar.gz -C /usr/local/bin --strip-components=1
+
+
 # install 1password
 FROM ubuntu:18.04 as onepassword_builder
 RUN apt-get update && apt-get install -y curl ca-certificates unzip
@@ -239,6 +244,7 @@ RUN sudo chown -R $USER:staff $HOME/.tmux
 COPY --from=kubectl_builder /usr/local/bin/kubectl /usr/local/bin/
 COPY --from=kubectl_builder /usr/local/bin/kustomize /usr/local/bin/
 COPY --from=kubectl_builder /usr/local/bin/etcdctl /usr/local/bin/
+COPY --from=kubectl_builder /usr/local/bin/helm /usr/local/bin/
 
 # onepassword
 COPY --from=onepassword_builder /usr/bin/op /usr/local/bin/
