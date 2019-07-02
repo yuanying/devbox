@@ -10,7 +10,7 @@ RUN mkdir -p /root/.tmux/plugins && cd /root/.tmux/plugins && \
 # install kubectl
 FROM ubuntu:18.04 as kubectl_builder
 
-ENV KUBE_VER v1.14.0
+ENV KUBE_VER v1.15.0
 RUN apt-get update && apt-get install -y curl ca-certificates
 RUN curl -L -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBE_VER}/bin/linux/amd64/kubectl
 RUN chmod 755 /usr/local/bin/kubectl
