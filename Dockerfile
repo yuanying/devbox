@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y curl ca-certificates
 RUN curl -L -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBE_VER}/bin/linux/amd64/kubectl
 RUN chmod 755 /usr/local/bin/kubectl
 
-ENV KUSTOMIZE_VER 2.0.3
+ENV KUSTOMIZE_VER 3.1.0
 RUN curl -L -o /usr/local/bin/kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v${KUSTOMIZE_VER}/kustomize_${KUSTOMIZE_VER}_linux_amd64
 RUN chmod 755 /usr/local/bin/kustomize
 
