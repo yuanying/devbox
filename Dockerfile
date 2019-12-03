@@ -16,7 +16,8 @@ RUN curl -L -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-
 RUN chmod 755 /usr/local/bin/kubectl
 
 ENV KUSTOMIZE_VER v3.4.0
-RUN curl -L -o /usr/local/bin/kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v${KUSTOMIZE_VER}/kustomize_${KUSTOMIZE_VER}_linux_amd64
+RUN curl -L -o /tmp/kustomize.tar.gz https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F${KUSTOMIZE_VER}/kustomize_${KUSTOMIZE_VER}_linux_amd64.tar.gz && \
+    tar zxvf /tmp/kustomize.tar.gz -C /usr/local/bin
 RUN chmod 755 /usr/local/bin/kustomize
 
 ENV ETCD_VER v3.2.26
