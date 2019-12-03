@@ -24,8 +24,8 @@ ENV DOWNLOAD_URL=https://storage.googleapis.com/etcd
 RUN curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz && \
     tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /usr/local/bin --strip-components=1
 
-ENV HELM_VER v2.13.0
-RUN curl -L https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VER}-linux-amd64.tar.gz -o /tmp/helm.tar.gz && \
+ENV HELM_VER v3.0.0
+RUN curl -L https://get.helm.sh/helm-${HELM_VER}-linux-amd64.tar.gz -o /tmp/helm.tar.gz && \
     tar xzvf /tmp/helm.tar.gz -C /usr/local/bin --strip-components=1
 
 
@@ -150,7 +150,6 @@ RUN set -x && brew install ghq
 RUN set -x && brew install go
 RUN set -x && brew install node
 RUN set -x && brew install jq
-RUN set -x && brew install dep
 RUN set -x && brew install rbenv
 RUN set -x && brew install pyenv-virtualenv
 
