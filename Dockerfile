@@ -82,16 +82,19 @@ ARG HOMEBREW_NO_AUTO_UPDATE=1
 RUN set -x && brew install docker
 RUN set -x && brew install zsh
 RUN set -x && brew install vim
-RUN set -x && brew install peco
-RUN set -x && brew install ghq
-RUN set -x && brew install node
+#RUN set -x && brew install node
 RUN set -x && brew install jq
-RUN set -x && brew install rbenv
-RUN set -x && brew install pyenv-virtualenv
+#RUN set -x && brew install rbenv
+#RUN set -x && brew install pyenv-virtualenv
 
 FROM golang:1.13 as golang_builder
 RUN go get -u golang.org/x/tools/gopls
 RUN go get -u github.com/nsf/gocode
+RUN go get github.com/x-motemen/ghq
+ENV PECO_VERSION=v0.5.7
+RUN curl -L -o /tmp/peco.tar.gz https://github.com/peco/peco/releases/download/${PECO_VERSION}/peco_linux_amd64.tar.gz && \
+    tar zxvf /tmp/peco.tar.gz --strip-components 1 && \
+    mv peco /go/bin
 
 FROM ubuntu:18.04 as main
 
@@ -150,6 +153,7 @@ ENV PATH="/usr/local/go/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linu
 COPY --from=linuxbrew_installer /home/linuxbrew /home/linuxbrew
 RUN sudo chown -R $USER:staff /home/linuxbrew
 
+# golang
 COPY --from=golang_builder /usr/local/go/bin /usr/local/go/bin
 RUN sudo chown -R $USER:staff /usr/local/go/bin
 COPY --from=golang_builder /go/bin /go/bin
