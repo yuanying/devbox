@@ -23,6 +23,7 @@ bash ~/secrets/link-secrets.sh
 echo "Clone dotfiles and setup"
 git clone https://github.com/yuanying/dotfiles ~/dotfiles
 bash dotfiles/bin/setup.sh
+vim -E -s -u "~/.vimrc" +PlugInstall +qall
 
 echo "Starting sshd..."
 sudo /usr/sbin/sshd -D
