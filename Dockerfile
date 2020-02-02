@@ -5,26 +5,34 @@ FROM ubuntu:18.04 as base
 RUN set -x -e && \
     apt-get update && \
     apt-get install -y \
-        build-essential \
         apt-utils \
-        locales \
+        autoconf \
+        bison \
+        build-essential \
+        ca-certificates \
         curl \
         file \
         git \
-        ca-certificates \
-        openssh-server \
-        mosh \
-        tmux \
         iputils-ping \
+        jq \
+        libbz2-dev \
+        libffi-dev \
+        libgdbm-dev \
+        libgdbm5 \
+        libncurses5-dev \
+        libreadline6-dev \
+        libsqlite3-dev \
+        libssl-dev \
+        libyaml-dev \
+        locales \
+        mosh \
         net-tools \
+        openssh-server \
         strace \
+        tmux \
+        vim \
         wget \
         zlib1g-dev \
-        libffi-dev \
-        libbz2-dev \
-        libsqlite3-dev \
-        vim \
-        jq \
         zsh
 
 ENV LANG="en_US.UTF-8"
@@ -103,6 +111,11 @@ RUN curl -L -o /tmp/peco.tar.gz https://github.com/peco/peco/releases/download/$
     tar zxvf /tmp/peco.tar.gz --strip-components 1 && \
     mv peco /go/bin
 
+# ruby builder
+FROM user_base as ruby_builder
+RUN sudo git clone https://github.com/rbenv/ruby-build.git
+RUN sudo mkdir -p /opt/ruby && sudo ruby-build/bin/ruby-build 2.7.0 /opt/ruby
+
 # main
 FROM user_base as main
 
@@ -139,6 +152,10 @@ COPY --from=kubectl_builder /usr/local/bin/kustomize /usr/local/bin/
 COPY --from=kubectl_builder /usr/local/bin/etcdctl /usr/local/bin/
 COPY --from=kubectl_builder /usr/local/bin/helm /usr/local/bin/
 
+# ruby
+COPY --from=ruby_builder /opt/ruby /opt/ruby
+RUN sudo chown -R $USER:staff /opt/ruby
+
 # onepassword
 COPY --from=onepassword_builder /usr/bin/op /usr/local/bin/
 
@@ -151,9 +168,9 @@ COPY link-secrets.sh $HOME/bin/link-secrets.sh
 RUN git clone https://github.com/ahmetb/kubectx.git ~/.kubectx && \
     cp ~/.kubectx/kubectx ~/bin/ && chmod +x ~/bin/kubectx && \
     cp ~/.kubectx/kubens ~/bin/ && chmod +x ~/bin/kubens && \
-    mkdir -p ~/.zsh/zsh-completions # && \
-#    ln -sf ~/.kubectx/completion/kubectx.zsh /home/linuxbrew/.linuxbrew/share/zsh/site-functions/_kubectx && \
-#    ln -sf ~/.kubectx/completion/kubens.zsh /home/linuxbrew/.linuxbrew/share/zsh/site-functions/_kubens
+    mkdir -p ~/.zsh/zsh-completions && \
+    ln -sf ~/.kubectx/completion/kubectx.zsh $HOME/.zsh/zsh-completions/_kubectx && \
+    ln -sf ~/.kubectx/completion/kubens.zsh $HOME/.zsh/zsh-completions/_kubens
 
 COPY entrypoint.sh /bin/entrypoint.sh
 CMD ["/bin/entrypoint.sh"]
