@@ -116,6 +116,26 @@ FROM user_base as ruby_builder
 RUN sudo git clone https://github.com/rbenv/ruby-build.git
 RUN sudo mkdir -p /opt/ruby && sudo ruby-build/bin/ruby-build 2.7.0 /opt/ruby
 
+# vim builder
+FROM base as vim_builder
+RUN git clone https://github.com/vim/vim.git && \
+    cd vim && \
+    git checkout v8.2.0200 && \
+    ./configure \
+        --prefix=/opt/vim/ \
+        --enable-multibyte \
+        --enable-nls \
+        --enable-cscope \
+        --enable-fail-if-missing=yes \
+        --with-features=huge \
+        --without-x \
+        --disable-xim \
+        --disable-gui \
+        --disable-sysmouse \
+        --disable-netbeans \
+        --disable-xsmp && \
+    make install
+
 # main
 FROM user_base as main
 
@@ -155,6 +175,9 @@ COPY --from=kubectl_builder /usr/local/bin/helm /usr/local/bin/
 # ruby
 COPY --from=ruby_builder /opt/ruby /opt/ruby
 RUN sudo chown -R $USER:staff /opt/ruby
+
+# vim
+COPY --from=vim_builder /opt/vim /opt/vim
 
 # onepassword
 COPY --from=onepassword_builder /usr/bin/op /usr/local/bin/
