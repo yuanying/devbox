@@ -169,8 +169,8 @@ RUN git clone https://github.com/ahmetb/kubectx.git ~/.kubectx && \
     cp ~/.kubectx/kubectx ~/bin/ && chmod +x ~/bin/kubectx && \
     cp ~/.kubectx/kubens ~/bin/ && chmod +x ~/bin/kubens && \
     mkdir -p ~/.zsh/zsh-completions && \
-    ln -sf ~/.kubectx/completion/kubectx.zsh $HOME/.zsh/zsh-completions/_kubectx && \
-    ln -sf ~/.kubectx/completion/kubens.zsh $HOME/.zsh/zsh-completions/_kubens
+    sudo ln -sf ~/.kubectx/completion/kubectx.zsh /usr/local/share/zsh/site-functions/_kubectx && \
+    sudo ln -sf ~/.kubectx/completion/kubens.zsh /usr/local/share/zsh/site-functions/_kubens
 
 COPY entrypoint.sh /bin/entrypoint.sh
 CMD ["/bin/entrypoint.sh"]
