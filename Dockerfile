@@ -120,8 +120,8 @@ RUN sudo mkdir -p /opt/ruby && sudo ruby-build/bin/ruby-build 2.7.0 /opt/ruby
 FROM user_base as main
 
 # golang
-COPY --from=golang_builder /usr/local/go/bin /usr/local/go/bin
-RUN sudo chown -R $USER:staff /usr/local/go/bin
+COPY --from=golang_builder /usr/local/go /usr/local/go
+RUN sudo chown -R $USER:staff /usr/local/go
 COPY --from=golang_builder /go/bin /go/bin
 RUN sudo chown -R $USER:staff /go/bin
 
