@@ -30,7 +30,6 @@ RUN set -x -e && \
         openssh-server \
         strace \
         tmux \
-        vim \
         wget \
         zlib1g-dev \
         zsh
