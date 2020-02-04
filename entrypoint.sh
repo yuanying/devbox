@@ -24,7 +24,7 @@ echo "Clone dotfiles and setup"
 git clone https://github.com/yuanying/dotfiles ~/dotfiles
 bash dotfiles/bin/setup.sh
 echo "Installing vim plugins..."
-vim -E -s -u "~/.vimrc" +PlugInstall +qall
+/opt/vim/bin/vim -E -s -u "~/.vimrc" +PlugInstall +qall
 
 echo "Starting sshd..."
 sudo /usr/sbin/sshd -D
