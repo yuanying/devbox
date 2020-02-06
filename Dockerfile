@@ -117,10 +117,10 @@ RUN sudo mkdir -p /opt/ruby && sudo ruby-build/bin/ruby-build 2.7.0 /opt/ruby
 
 # vim builder
 FROM base as vim_builder
-RUN git clone https://github.com/vim/vim.git && \
+RUN sudo git clone https://github.com/vim/vim.git && \
     cd vim && \
-    git checkout v8.2.0200 && \
-    ./configure \
+    sudo git checkout v8.2.0200 && \
+    sudo ./configure \
         --prefix=/opt/vim/ \
         --enable-multibyte \
         --enable-nls \
@@ -133,7 +133,7 @@ RUN git clone https://github.com/vim/vim.git && \
         --disable-sysmouse \
         --disable-netbeans \
         --disable-xsmp && \
-    make install
+    sudo make install
 
 # main
 FROM user_base as main
