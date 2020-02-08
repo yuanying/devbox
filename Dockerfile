@@ -138,6 +138,13 @@ RUN sudo git clone https://github.com/vim/vim.git && \
 # main
 FROM user_base as main
 
+# Install user applications
+RUN set -x -e && \
+    sudo apt-get update && \
+    sudo apt-get install -y \
+        silversearcher-ag
+
+
 # golang
 COPY --from=golang_builder /usr/local/go /usr/local/go
 RUN sudo chown -R $USER:staff /usr/local/go
