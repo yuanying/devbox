@@ -167,6 +167,7 @@ RUN curl -fLo ~/.vim/autoload/plug.vim \
 # zsh plugins
 RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh/zsh-syntax-highlighting
 RUN git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
+RUN git clone https://github.com/denysdovhan/spaceship-prompt ~/.zsh/spaceship-prompt
 
 # tmux plugins
 COPY --from=tmux_plugins_builder /root/.tmux/plugins $HOME/.tmux/plugins
@@ -199,7 +200,8 @@ RUN git clone https://github.com/ahmetb/kubectx.git ~/.kubectx && \
     cp ~/.kubectx/kubens ~/bin/ && chmod +x ~/bin/kubens && \
     mkdir -p ~/.zsh/zsh-completions && \
     sudo ln -sf ~/.kubectx/completion/kubectx.zsh /usr/local/share/zsh/site-functions/_kubectx && \
-    sudo ln -sf ~/.kubectx/completion/kubens.zsh /usr/local/share/zsh/site-functions/_kubens
+    sudo ln -sf ~/.kubectx/completion/kubens.zsh /usr/local/share/zsh/site-functions/_kubens && \
+    ln -sf $HOME/.zsh/spaceship-prompt/spaceship.zsh $HOME/.zsh/zsh-completions/prompt_spaceship_setup
 
 COPY entrypoint.sh /bin/entrypoint.sh
 CMD ["/bin/entrypoint.sh"]
