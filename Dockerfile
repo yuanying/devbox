@@ -103,6 +103,7 @@ FROM docker:19.03 as docker_builder
 # golang builder
 FROM golang:1.13 as golang_builder
 RUN go get -u golang.org/x/tools/gopls
+RUN go get -u golang.org/x/tools/cmd/goimports
 RUN go get -u github.com/nsf/gocode
 RUN go get github.com/x-motemen/ghq
 ENV PECO_VERSION=v0.5.7
