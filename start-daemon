@@ -13,6 +13,7 @@ exec docker run \
     --rm \
     -d \
     --name devbox \
+    --hostname="$(hostname)" \
     --cap-add SYS_PTRACE \
     -it \
     -v /var/run/docker.sock:/var/run/docker.sock \
