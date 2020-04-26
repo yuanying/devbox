@@ -114,6 +114,9 @@ ENV PECO_VERSION=v0.5.7
 RUN curl -L -o /tmp/peco.tar.gz https://github.com/peco/peco/releases/download/${PECO_VERSION}/peco_linux_amd64.tar.gz && \
     tar zxvf /tmp/peco.tar.gz --strip-components 1 && \
     mv peco /go/bin
+RUN curl -L -o docker-buildx https://github.com/docker/buildx/releases/download/v0.3.1/buildx-v0.3.1.linux-amd64 && \
+    chmod +x docker-buildx && \
+    mv docker-buildx /usr/local/lib
 
 # ruby builder
 FROM user_base as ruby_builder
@@ -162,6 +165,8 @@ COPY --from=golang_builder /usr/local/go /usr/local/go
 RUN sudo chown -R $USER:staff /usr/local/go
 COPY --from=golang_builder /go/bin /go/bin
 RUN sudo chown -R $USER:staff /go/bin
+RUN sudo mkdir -p /usr/local/lib/docker/cli-plugins
+COPY --from=golang_builder /usr/local/lib/docker-buildx /usr/local/lib/docker/cli-plugins/
 
 # Install go tools
 ENV GOPATH="/go"
