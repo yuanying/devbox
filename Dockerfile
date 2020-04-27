@@ -83,7 +83,7 @@ RUN curl -L -o /tmp/kustomize.tar.gz https://github.com/kubernetes-sigs/kustomiz
     tar zxvf /tmp/kustomize.tar.gz -C /usr/local/bin
 RUN chmod 755 /usr/local/bin/kustomize
 
-ENV ETCD_VER v3.3.18
+ENV ETCD_VER v3.4.3
 ENV DOWNLOAD_URL=https://storage.googleapis.com/etcd
 RUN curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz && \
     tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /usr/local/bin --strip-components=1
