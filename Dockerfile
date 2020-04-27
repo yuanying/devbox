@@ -73,7 +73,7 @@ RUN mkdir -p /root/.tmux/plugins && cd /root/.tmux/plugins && \
 # install kubectl
 FROM ubuntu:18.04 as kubectl_builder
 
-ENV KUBE_VER v1.17.2
+ENV KUBE_VER v1.17.5
 RUN apt-get update && apt-get install -y curl ca-certificates
 RUN curl -L -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBE_VER}/bin/linux/amd64/kubectl
 RUN chmod 755 /usr/local/bin/kubectl
@@ -91,10 +91,6 @@ RUN curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /
 ENV HELM_VER v3.0.0
 RUN curl -L https://get.helm.sh/helm-${HELM_VER}-linux-amd64.tar.gz -o /tmp/helm.tar.gz && \
     tar xzvf /tmp/helm.tar.gz -C /usr/local/bin --strip-components=1
-
-ENV KUBESEC_VER 0.9.2
-RUN curl -sSL https://github.com/shyiko/kubesec/releases/download/${KUBESEC_VER}/kubesec-${KUBESEC_VER}-linux-amd64 \
-    -o kubesec && chmod a+x kubesec && mv kubesec /usr/local/bin/
 
 # install 1password
 FROM ubuntu:18.04 as onepassword_builder
@@ -195,7 +191,6 @@ COPY --from=kubectl_builder /usr/local/bin/kubectl /usr/local/bin/
 COPY --from=kubectl_builder /usr/local/bin/kustomize /usr/local/bin/
 COPY --from=kubectl_builder /usr/local/bin/etcdctl /usr/local/bin/
 COPY --from=kubectl_builder /usr/local/bin/helm /usr/local/bin/
-COPY --from=kubectl_builder /usr/local/bin/kubesec /usr/local/bin/
 
 # ruby
 COPY --from=ruby_builder /opt/ruby /opt/ruby
