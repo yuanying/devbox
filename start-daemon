@@ -2,12 +2,12 @@
 
 set -e
 
-mkdir -p /home/$USER/temp
-touch /home/$USER/temp/.zsh_history
-mkdir -p /home/$USER/.rbenv
-mkdir -p /home/$USER/.pyenv
-mkdir -p /home/$USER/secrets
-mkdir -p /home/$USER/.vim
+mkdir -p ${HOME}/temp
+touch ${HOME}/temp/.zsh_history
+mkdir -p ${HOME}/secrets
+mkdir -p ${HOME}/.vim
+mkdir -p ${HOME}/.gnupg
+mkdir -p ${HOME}/.asdf
 
 exec docker run \
     --rm \
@@ -17,13 +17,15 @@ exec docker run \
     --cap-add SYS_PTRACE \
     -it \
     -v /var/run/docker.sock:/var/run/docker.sock \
-    -v /home/$USER/src:/home/dev/src \
-    -v /home/$USER/secrets:/home/dev/secrets \
-    -v /home/$USER/.kube:/home/dev/.kube \
-    -v /home/$USER/temp/.zsh_history:/home/dev/.zsh_history \
-    -v /home/$USER/.rbenv:/home/dev/.rbenv \
-    -v /home/$USER/.pyenv:/home/dev/.pyenv \
-    -v /home/$USER/.vim:/home/dev/.vim \
+    -v ${HOME}/src:/home/dev/src \
+    -v ${HOME}/secrets:/home/dev/secrets \
+    -v ${HOME}/.kube:/home/dev/.kube \
+    -v ${HOME}/temp/.zsh_history:/home/dev/.zsh_history \
+    -v ${HOME}/.vim:/home/dev/.vim \
+    -v ${HOME}/.gnupg:/home/dev/.gnupg \
+    -v ${HOME}/.asdf:/home/dev/.asdf \
+    -v /mnt/shared:/home/dev/nfs \
+    -v /mnt/old:/home/dev/old \
     -w /home/dev \
     -p 3222:3222 \
     -p 60000-60010:60000-60010/udp \

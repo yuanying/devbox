@@ -63,39 +63,6 @@ FROM base as user_base
 USER "$USER"
 ENV HOME="/home/$USER"
 
-# install tmux plugins
-FROM ubuntu:18.04 as tmux_plugins_builder
-
-RUN apt-get update && apt-get install -y git ca-certificates
-RUN mkdir -p /root/.tmux/plugins && cd /root/.tmux/plugins && \
-    git clone https://github.com/jonmosco/kube-tmux
-
-# install kubectl
-FROM ubuntu:18.04 as kubectl_builder
-
-ENV KUBE_VER v1.17.2
-RUN apt-get update && apt-get install -y curl ca-certificates
-RUN curl -L -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBE_VER}/bin/linux/amd64/kubectl
-RUN chmod 755 /usr/local/bin/kubectl
-
-ENV KUSTOMIZE_VER v3.4.0
-RUN curl -L -o /tmp/kustomize.tar.gz https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F${KUSTOMIZE_VER}/kustomize_${KUSTOMIZE_VER}_linux_amd64.tar.gz && \
-    tar zxvf /tmp/kustomize.tar.gz -C /usr/local/bin
-RUN chmod 755 /usr/local/bin/kustomize
-
-ENV ETCD_VER v3.3.18
-ENV DOWNLOAD_URL=https://storage.googleapis.com/etcd
-RUN curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz && \
-    tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /usr/local/bin --strip-components=1
-
-ENV HELM_VER v3.0.0
-RUN curl -L https://get.helm.sh/helm-${HELM_VER}-linux-amd64.tar.gz -o /tmp/helm.tar.gz && \
-    tar xzvf /tmp/helm.tar.gz -C /usr/local/bin --strip-components=1
-
-ENV KUBESEC_VER 0.9.2
-RUN curl -sSL https://github.com/shyiko/kubesec/releases/download/${KUBESEC_VER}/kubesec-${KUBESEC_VER}-linux-amd64 \
-    -o kubesec && chmod a+x kubesec && mv kubesec /usr/local/bin/
-
 # install 1password
 FROM ubuntu:18.04 as onepassword_builder
 RUN apt-get update && apt-get install -y curl ca-certificates unzip
@@ -117,18 +84,6 @@ RUN curl -L -o /tmp/peco.tar.gz https://github.com/peco/peco/releases/download/$
 RUN curl -L -o docker-buildx https://github.com/docker/buildx/releases/download/v0.3.1/buildx-v0.3.1.linux-amd64 && \
     chmod +x docker-buildx && \
     mv docker-buildx /usr/local/lib
-
-# ruby builder
-FROM user_base as ruby_builder
-RUN sudo git clone https://github.com/rbenv/ruby-build.git
-RUN sudo mkdir -p /opt/ruby && sudo ruby-build/bin/ruby-build 2.7.0 /opt/ruby
-
-# node builder
-FROM base as node_builder
-ENV NODE_VER=v12.16.0
-RUN curl -L -o node.tar.xz https://nodejs.org/dist/${NODE_VER}/node-${NODE_VER}-linux-x64.tar.xz && \
-    mkdir -p /opt/node && \
-    tar Jxvf node.tar.xz --strip-components 1 -C /opt/node
 
 # vim builder
 FROM base as vim_builder
@@ -159,7 +114,6 @@ RUN set -x -e && \
     sudo apt-get install -y \
         silversearcher-ag
 
-
 # golang
 COPY --from=golang_builder /usr/local/go /usr/local/go
 RUN sudo chown -R $USER:staff /usr/local/go
@@ -186,25 +140,6 @@ RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh/zs
 RUN git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
 RUN git clone https://github.com/denysdovhan/spaceship-prompt ~/.zsh/spaceship-prompt
 
-# tmux plugins
-COPY --from=tmux_plugins_builder /root/.tmux/plugins $HOME/.tmux/plugins
-RUN sudo chown -R $USER:staff $HOME/.tmux
-
-# kubectl
-COPY --from=kubectl_builder /usr/local/bin/kubectl /usr/local/bin/
-COPY --from=kubectl_builder /usr/local/bin/kustomize /usr/local/bin/
-COPY --from=kubectl_builder /usr/local/bin/etcdctl /usr/local/bin/
-COPY --from=kubectl_builder /usr/local/bin/helm /usr/local/bin/
-COPY --from=kubectl_builder /usr/local/bin/kubesec /usr/local/bin/
-
-# ruby
-COPY --from=ruby_builder /opt/ruby /opt/ruby
-RUN sudo chown -R $USER:staff /opt/ruby
-
-# node
-COPY --from=node_builder /opt/node /opt/node
-RUN sudo chown -R $USER:staff /opt/node
-
 # vim
 COPY --from=vim_builder /opt/vim /opt/vim
 
@@ -218,12 +153,11 @@ RUN mkdir -p $HOME/bin
 COPY pull-secrets.sh $HOME/bin/pull-secrets.sh
 COPY link-secrets.sh $HOME/bin/link-secrets.sh
 RUN git clone https://github.com/ahmetb/kubectx.git ~/.kubectx && \
-    cp ~/.kubectx/kubectx ~/bin/ && chmod +x ~/bin/kubectx && \
-    cp ~/.kubectx/kubens ~/bin/ && chmod +x ~/bin/kubens && \
     mkdir -p ~/.zsh/zsh-completions && \
     sudo ln -sf ~/.kubectx/completion/kubectx.zsh /usr/local/share/zsh/site-functions/_kubectx && \
     sudo ln -sf ~/.kubectx/completion/kubens.zsh /usr/local/share/zsh/site-functions/_kubens && \
     ln -sf $HOME/.zsh/spaceship-prompt/spaceship.zsh $HOME/.zsh/zsh-completions/prompt_spaceship_setup
+# RUN git clone https://github.com/asdf-vm/asdf.git $HOME/.asdf --branch v0.7.8
 
 COPY entrypoint.sh /bin/entrypoint.sh
 CMD ["/bin/entrypoint.sh"]
