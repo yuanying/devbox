@@ -1,5 +1,7 @@
 
-FROM ubuntu:18.04 as base
+FROM ubuntu:20.04 as base
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Install build-essential etc
 RUN set -x -e && \
@@ -18,7 +20,7 @@ RUN set -x -e && \
         libbz2-dev \
         libffi-dev \
         libgdbm-dev \
-        libgdbm5 \
+        libgdbm6 \
         libncurses5-dev \
         libreadline6-dev \
         libsqlite3-dev \
@@ -65,7 +67,7 @@ USER "$USER"
 ENV HOME="/home/$USER"
 
 # install 1password
-FROM ubuntu:18.04 as onepassword_builder
+FROM ubuntu:20.04 as onepassword_builder
 RUN apt-get update && apt-get install -y curl ca-certificates unzip
 RUN curl -sS -o 1password.zip https://cache.agilebits.com/dist/1P/op/pkg/v0.5.5/op_linux_amd64_v0.5.5.zip && unzip 1password.zip op -d /usr/bin &&  rm 1password.zip
 
