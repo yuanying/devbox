@@ -84,7 +84,7 @@ ENV PECO_VERSION=v0.5.7
 RUN curl -L -o /tmp/peco.tar.gz https://github.com/peco/peco/releases/download/${PECO_VERSION}/peco_linux_amd64.tar.gz && \
     tar zxvf /tmp/peco.tar.gz --strip-components 1 && \
     mv peco /go/bin
-RUN curl -L -o docker-buildx https://github.com/docker/buildx/releases/download/v0.3.1/buildx-v0.3.1.linux-amd64 && \
+RUN curl -L -o docker-buildx https://github.com/docker/buildx/releases/download/v0.4.1/buildx-v0.4.1.linux-amd64 && \
     chmod +x docker-buildx && \
     mv docker-buildx /usr/local/lib
 
@@ -107,6 +107,14 @@ RUN sudo git clone https://github.com/vim/vim.git && \
         --disable-netbeans \
         --disable-xsmp && \
     sudo make install
+
+# code-server builder
+FROM user_base as code_builder
+RUN mkdir -p /home/dev/.local/lib /home/dev/.local/bin && \
+    curl -fL https://github.com/cdr/code-server/releases/download/v3.4.1/code-server-3.4.1-linux-amd64.tar.gz \
+      | tar -C /home/dev/.local/lib -xz && \
+    mv /home/dev/.local/lib/code-server-3.4.1-linux-amd64 /home/dev/.local/lib/code-server-3.4.1 && \
+    ln -s /home/dev/.local/lib/code-server-3.4.1/bin/code-server /home/dev/.local/bin/code-server
 
 # main
 FROM user_base as main
@@ -151,6 +159,9 @@ COPY --from=onepassword_builder /usr/bin/op /usr/local/bin/
 
 # docker
 COPY --from=docker_builder /usr/local/bin/docker /usr/local/bin/
+
+# code-server
+COPY --from=code_builder /home/dev/.local /home/dev/.local
 
 RUN mkdir -p $HOME/bin
 COPY pull-secrets.sh $HOME/bin/pull-secrets.sh

@@ -9,7 +9,7 @@ mkdir -p ${HOME}/secrets
 mkdir -p ${HOME}/.vim
 mkdir -p ${HOME}/.gnupg
 mkdir -p ${HOME}/.asdf
-mkdir -p ${HOME}/.local
+mkdir -p ${HOME}/.local/share
 
 exec docker run \
     --rm \
@@ -25,7 +25,7 @@ exec docker run \
     -v ${HOME}/pkg:/home/dev/pkg \
     -v ${HOME}/secrets:/home/dev/secrets \
     -v ${HOME}/.config:/home/dev/.config \
-    -v ${HOME}/.local:/home/dev/.local \
+    -v ${HOME}/.local/share:/home/dev/.local/share \
     -v ${HOME}/.kube:/home/dev/.kube \
     -v ${HOME}/.docker:/home/dev/.docker \
     -v ${HOME}/temp/.zsh_history:/home/dev/.zsh_history \
@@ -37,6 +37,7 @@ exec docker run \
     -v ${HOME}/old:/home/dev/old \
     -w /home/dev \
     -p 8080:8080 \
+    -p 9090:9090 \
     -p 3222:3222 \
     -p 60000-60010:60000-60010/udp \
     yuanying/devbox
