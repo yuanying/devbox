@@ -80,6 +80,7 @@ RUN go get -u golang.org/x/tools/gopls
 RUN go get -u golang.org/x/tools/cmd/goimports
 RUN go get -u github.com/nsf/gocode
 RUN go get github.com/x-motemen/ghq
+RUN go get -u github.com/jstemmer/gotags
 ENV PECO_VERSION=v0.5.7
 RUN curl -L -o /tmp/peco.tar.gz https://github.com/peco/peco/releases/download/${PECO_VERSION}/peco_linux_amd64.tar.gz && \
     tar zxvf /tmp/peco.tar.gz --strip-components 1 && \
@@ -123,7 +124,8 @@ FROM user_base as main
 RUN set -x -e && \
     sudo apt-get update && \
     sudo apt-get install -y \
-        silversearcher-ag
+        silversearcher-ag \
+        universal-ctags
 
 # golang
 COPY --from=golang_builder /usr/local/go /usr/local/go
