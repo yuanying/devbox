@@ -10,6 +10,7 @@ mkdir -p ${HOME}/.vim
 mkdir -p ${HOME}/.gnupg
 mkdir -p ${HOME}/.asdf
 mkdir -p ${HOME}/.local/share
+mkdir -p ${HOME}/.bp
 
 exec docker run \
     --rm \
@@ -21,6 +22,8 @@ exec docker run \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v /lib/modules:/lib/modules \
     -v /dev:/dev \
+    -v /usr/share/ca-certificates:/usr/share/ca-certificates \
+    -v /etc/ssl/certs:/etc/ssl/certs \
     -v ${HOME}/src:/home/dev/src \
     -v ${HOME}/pkg:/home/dev/pkg \
     -v ${HOME}/secrets:/home/dev/secrets \
@@ -35,6 +38,7 @@ exec docker run \
     -v ${HOME}/.tool-versions:/home/dev/.tool-versions \
     -v ${HOME}/shared:/home/dev/nfs \
     -v ${HOME}/old:/home/dev/old \
+    -v ${HOME}/.bp:/home/dev/.bp \
     -w /home/dev \
     -p 8080:8080 \
     -p 9090:9090 \
