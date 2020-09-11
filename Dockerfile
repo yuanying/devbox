@@ -111,11 +111,12 @@ RUN sudo git clone https://github.com/vim/vim.git && \
 
 # code-server builder
 FROM user_base as code_builder
+ENV CODE_SERVER_VERSION=3.5.0
 RUN mkdir -p /home/dev/.local/lib /home/dev/.local/bin && \
-    curl -fL https://github.com/cdr/code-server/releases/download/v3.4.1/code-server-3.4.1-linux-amd64.tar.gz \
+    curl -fL https://github.com/cdr/code-server/releases/download/v${CODE_SERVER_VERSION}/code-server-${CODE_SERVER_VERSION}-linux-amd64.tar.gz \
       | tar -C /home/dev/.local/lib -xz && \
-    mv /home/dev/.local/lib/code-server-3.4.1-linux-amd64 /home/dev/.local/lib/code-server-3.4.1 && \
-    ln -s /home/dev/.local/lib/code-server-3.4.1/bin/code-server /home/dev/.local/bin/code-server
+    mv /home/dev/.local/lib/code-server-${CODE_SERVER_VERSION}-linux-amd64 /home/dev/.local/lib/code-server-${CODE_SERVER_VERSION} && \
+    ln -s /home/dev/.local/lib/code-server-${CODE_SERVER_VERSION}/bin/code-server /home/dev/.local/bin/code-server
 
 # main
 FROM user_base as main
@@ -125,7 +126,8 @@ RUN set -x -e && \
     sudo apt-get update && \
     sudo apt-get install -y \
         silversearcher-ag \
-        universal-ctags
+        universal-ctags \
+        unzip
 
 # golang
 COPY --from=golang_builder /usr/local/go /usr/local/go
