@@ -75,19 +75,22 @@ RUN curl -sS -o 1password.zip https://cache.agilebits.com/dist/1P/op/pkg/v0.5.5/
 FROM docker:19.03 as docker_builder
 
 # golang builder
-FROM golang:1.13 as golang_builder
+FROM golang:1.15 as golang_builder
 RUN go get -u golang.org/x/tools/gopls
 RUN go get -u golang.org/x/tools/cmd/goimports
 RUN go get -u github.com/nsf/gocode
 RUN go get github.com/x-motemen/ghq
 RUN go get -u github.com/jstemmer/gotags
-ENV PECO_VERSION=v0.5.7
+ENV PECO_VERSION=v0.5.8
 RUN curl -L -o /tmp/peco.tar.gz https://github.com/peco/peco/releases/download/${PECO_VERSION}/peco_linux_amd64.tar.gz && \
     tar zxvf /tmp/peco.tar.gz --strip-components 1 && \
     mv peco /go/bin
-RUN curl -L -o docker-buildx https://github.com/docker/buildx/releases/download/v0.4.1/buildx-v0.4.1.linux-amd64 && \
+RUN curl -L -o docker-buildx https://github.com/docker/buildx/releases/download/v0.5.1/buildx-v0.5.1.linux-amd64 && \
     chmod +x docker-buildx && \
     mv docker-buildx /usr/local/lib
+RUN curl -L -o hey https://hey-release.s3.us-east-2.amazonaws.com/hey_linux_amd64 && \
+    chmod +x hey && \
+    mv hey /go/bin
 
 # vim builder
 FROM base as vim_builder
