@@ -114,7 +114,7 @@ RUN sudo git clone https://github.com/vim/vim.git && \
 
 # code-server builder
 FROM user_base as code_builder
-ENV CODE_SERVER_VERSION=3.8.0
+ENV CODE_SERVER_VERSION=3.9.1
 RUN mkdir -p /home/dev/.local/lib /home/dev/.local/bin && \
     curl -fL https://github.com/cdr/code-server/releases/download/v${CODE_SERVER_VERSION}/code-server-${CODE_SERVER_VERSION}-linux-amd64.tar.gz \
       | tar -C /home/dev/.local/lib -xz && \
