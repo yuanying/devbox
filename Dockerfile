@@ -21,7 +21,7 @@ RUN set -x -e && \
         libffi-dev \
         libgdbm-dev \
         libgdbm6 \
-        libncurses5-dev \
+        libncurses-dev \
         libreadline6-dev \
         libsqlite3-dev \
         libssl-dev \
@@ -75,16 +75,12 @@ RUN curl -sS -o 1password.zip https://cache.agilebits.com/dist/1P/op/pkg/v0.5.5/
 FROM docker:19.03 as docker_builder
 
 # golang builder
-FROM golang:1.15 as golang_builder
+FROM golang:1.16 as golang_builder
 RUN go get -u golang.org/x/tools/gopls
 RUN go get -u golang.org/x/tools/cmd/goimports
 RUN go get -u github.com/nsf/gocode
 RUN go get github.com/x-motemen/ghq
 RUN go get -u github.com/jstemmer/gotags
-ENV PECO_VERSION=v0.5.8
-RUN curl -L -o /tmp/peco.tar.gz https://github.com/peco/peco/releases/download/${PECO_VERSION}/peco_linux_amd64.tar.gz && \
-    tar zxvf /tmp/peco.tar.gz --strip-components 1 && \
-    mv peco /go/bin
 RUN curl -L -o docker-buildx https://github.com/docker/buildx/releases/download/v0.5.1/buildx-v0.5.1.linux-amd64 && \
     chmod +x docker-buildx && \
     mv docker-buildx /usr/local/lib
@@ -96,7 +92,7 @@ RUN curl -L -o hey https://hey-release.s3.us-east-2.amazonaws.com/hey_linux_amd6
 FROM base as vim_builder
 RUN sudo git clone https://github.com/vim/vim.git && \
     cd vim && \
-    sudo git checkout v8.2.0200 && \
+    sudo git checkout v8.2.2760 && \
     sudo ./configure \
         --prefix=/opt/vim/ \
         --enable-multibyte \
