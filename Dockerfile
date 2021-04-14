@@ -13,26 +13,36 @@ RUN set -x -e && \
         build-essential \
         ca-certificates \
         curl \
+        dpkg \
         file \
         git \
         iputils-ping \
         jq \
         libbz2-dev \
+        libc6 \
         libffi-dev \
+        libgcc-s1 \
         libgdbm-dev \
         libgdbm6 \
+        libio-socket-ip-perl \
         libncurses-dev \
+        libprotobuf17 \
         libreadline6-dev \
         libsqlite3-dev \
         libssl-dev \
+        libssl1.1 \
+        libstdc++6 \
+        libtinfo6 \
+        libutempter0 \
         libyaml-dev \
         locales \
-        mosh \
         net-tools \
+        openssh-client \
         openssh-server \
         strace \
         tmux \
         wget \
+        zlib1g \
         zlib1g-dev \
         zsh
 
@@ -108,6 +118,16 @@ RUN sudo git clone https://github.com/vim/vim.git && \
         --disable-xsmp && \
     sudo make install
 
+# mosh builder
+FROM base as mosh_builder
+RUN apt-get update && apt-get install -y automake libtool g++ protobuf-compiler libprotobuf-dev libboost-dev libutempter-dev zlib1g-dev libio-pty-perl libssl-dev pkg-config
+RUN git clone https://github.com/mobile-shell/mosh.git && \
+    cd mosh && \
+    ./autogen.sh && \
+    ./configure \
+      --prefix=/opt/mosh/ && \
+    make install
+
 # code-server builder
 FROM user_base as code_builder
 ENV CODE_SERVER_VERSION=3.9.1
@@ -156,6 +176,9 @@ RUN git clone https://github.com/denysdovhan/spaceship-prompt ~/.zsh/spaceship-p
 
 # vim
 COPY --from=vim_builder /opt/vim /opt/vim
+
+# mosh
+COPY --from=mosh_builder /opt/mosh /opt/mosh
 
 # onepassword
 COPY --from=onepassword_builder /usr/bin/op /usr/local/bin/
