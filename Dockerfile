@@ -9,6 +9,7 @@ RUN set -x -e && \
     apt-get install -y \
         apt-utils \
         autoconf \
+        automake \
         bison \
         build-essential \
         ca-certificates \
@@ -20,6 +21,7 @@ RUN set -x -e && \
         jq \
         libbz2-dev \
         libc6 \
+        libevent-dev \
         libffi-dev \
         libgcc-s1 \
         libgdbm-dev \
@@ -39,8 +41,8 @@ RUN set -x -e && \
         net-tools \
         openssh-client \
         openssh-server \
+        pkg-config \
         strace \
-        tmux \
         wget \
         zlib1g \
         zlib1g-dev \
@@ -97,6 +99,17 @@ RUN curl -L -o docker-buildx https://github.com/docker/buildx/releases/download/
 RUN curl -L -o hey https://hey-release.s3.us-east-2.amazonaws.com/hey_linux_amd64 && \
     chmod +x hey && \
     mv hey /go/bin
+
+# tmux builder
+FROM base as tmux_builder
+RUN git clone https://github.com/tmux/tmux.git && \
+    cd tmux && \
+    git checkout 3.2 && \
+    sh autogen.sh && \
+    ./configure && \
+    make && \
+    mkdir -p /opt/tmux/bin && \
+    mv tmux /opt/tmux/bin
 
 # vim builder
 FROM base as vim_builder
@@ -179,6 +192,9 @@ COPY --from=vim_builder /opt/vim /opt/vim
 
 # mosh
 COPY --from=mosh_builder /opt/mosh /opt/mosh
+
+# tmux
+COPY --from=tmux_builder /opt/tmux/bin/tmux /usr/local/bin/
 
 # onepassword
 COPY --from=onepassword_builder /usr/bin/op /usr/local/bin/
