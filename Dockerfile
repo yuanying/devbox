@@ -42,6 +42,7 @@ RUN set -x -e && \
         openssh-client \
         openssh-server \
         pkg-config \
+        software-properties-common \
         strace \
         wget \
         zlib1g \
@@ -155,8 +156,10 @@ FROM user_base as main
 
 # Install user applications
 RUN set -x -e && \
+    sudo add-apt-repository ppa:neovim-ppa/unstable && \
     sudo apt-get update && \
     sudo apt-get install -y \
+        neovim \
         silversearcher-ag \
         universal-ctags \
         unzip
@@ -186,9 +189,18 @@ RUN curl -fLo ~/.vim/autoload/plug.vim \
 RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh/zsh-syntax-highlighting
 RUN git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
 RUN git clone https://github.com/denysdovhan/spaceship-prompt ~/.zsh/spaceship-prompt
+RUN git clone https://github.com/zdharma/history-search-multi-word.git ~/.zsh/history-search-multi-word
 
-# vim
-COPY --from=vim_builder /opt/vim /opt/vim
+# # vim
+# COPY --from=vim_builder /opt/vim /opt/vim
+
+RUN \
+   sudo update-alternatives --install /usr/bin/vi vi /usr/bin/nvim 60 && \
+   sudo update-alternatives --config vi && \
+   sudo update-alternatives --install /usr/bin/vim vim /usr/bin/nvim 60 && \
+   sudo update-alternatives --config vim && \
+   sudo update-alternatives --install /usr/bin/editor editor /usr/bin/nvim 60 && \
+   sudo update-alternatives --config editor
 
 # mosh
 COPY --from=mosh_builder /opt/mosh /opt/mosh
