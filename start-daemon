@@ -11,6 +11,7 @@ mkdir -p ${HOME}/.gnupg
 mkdir -p ${HOME}/.asdf
 mkdir -p ${HOME}/.local/share
 mkdir -p ${HOME}/.bp
+mkdir -p ${HOME}/.krew
 
 exec docker run \
     --rm \
@@ -39,6 +40,7 @@ exec docker run \
     -v ${HOME}/shared:/home/dev/nfs \
     -v ${HOME}/old:/home/dev/old \
     -v ${HOME}/.bp:/home/dev/.bp \
+    -v ${HOME}/.krew:/home/dev/.krew \
     -w /home/dev \
     -p 8080:8080 \
     -p 9090:9090 \
