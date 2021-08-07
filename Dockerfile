@@ -17,6 +17,7 @@ RUN set -x -e && \
         dpkg \
         file \
         git \
+        iproute2 \
         iputils-ping \
         jq \
         libbz2-dev \
