@@ -2,6 +2,9 @@
 
 set -e
 
+ROOT=$(dirname "${BASH_SOURCE}")
+source ${ROOT}/.env
+
 mkdir -p ${HOME}/temp
 touch ${HOME}/temp/.zsh_history
 touch ${HOME}/.tool-versions
@@ -19,6 +22,9 @@ exec docker run \
     --name devbox \
     --hostname="$(hostname)" \
     --privileged \
+    --net=macvlan4to6 \
+    --ip ${CONTAINER_IPV4} \
+    --ip6 ${CONTAINER_IPV6} \
     -it \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v /lib/modules:/lib/modules \
@@ -42,8 +48,4 @@ exec docker run \
     -v ${HOME}/.bp:/home/dev/.bp \
     -v ${HOME}/.krew:/home/dev/.krew \
     -w /home/dev \
-    -p 8080:8080 \
-    -p 9090:9090 \
-    -p 3222:3222 \
-    -p 60000-60010:60000-60010/udp \
     yuanying/devbox
