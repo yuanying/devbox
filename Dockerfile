@@ -86,7 +86,7 @@ RUN apt-get update && apt-get install -y curl ca-certificates unzip
 RUN curl -sS -o 1password.zip https://cache.agilebits.com/dist/1P/op/pkg/v0.5.5/op_linux_amd64_v0.5.5.zip && unzip 1password.zip op -d /usr/bin &&  rm 1password.zip
 
 # docker builder
-FROM docker:19.03 as docker_builder
+FROM docker:20.10 as docker_builder
 
 # golang builder
 FROM golang:1.16 as golang_builder
