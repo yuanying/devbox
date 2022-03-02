@@ -15,6 +15,7 @@ RUN set -x -e && \
         ca-certificates \
         curl \
         dpkg \
+        dnsutils \
         file \
         git \
         iproute2 \
@@ -89,13 +90,13 @@ RUN curl -sS -o 1password.zip https://cache.agilebits.com/dist/1P/op/pkg/v0.5.5/
 FROM docker:20.10 as docker_builder
 
 # golang builder
-FROM golang:1.16 as golang_builder
-RUN go get -u golang.org/x/tools/gopls
-RUN go get -u golang.org/x/tools/cmd/goimports
-RUN go get -u github.com/nsf/gocode
-RUN go get github.com/x-motemen/ghq
-RUN go get -u github.com/jstemmer/gotags
-RUN curl -L -o docker-buildx https://github.com/docker/buildx/releases/download/v0.5.1/buildx-v0.5.1.linux-amd64 && \
+FROM golang:1.17 as golang_builder
+RUN go install golang.org/x/tools/gopls@latest
+RUN go install golang.org/x/tools/cmd/goimports@latest
+RUN go install github.com/nsf/gocode@latest
+RUN go install github.com/x-motemen/ghq@latest
+RUN go install github.com/jstemmer/gotags@latest
+RUN curl -L -o docker-buildx https://github.com/docker/buildx/releases/download/v0.7.1/buildx-v0.7.1.linux-amd64 && \
     chmod +x docker-buildx && \
     mv docker-buildx /usr/local/lib
 RUN curl -L -o hey https://hey-release.s3.us-east-2.amazonaws.com/hey_linux_amd64 && \
@@ -114,24 +115,24 @@ RUN git clone https://github.com/tmux/tmux.git && \
     mv tmux /opt/tmux/bin
 
 # vim builder
-FROM base as vim_builder
-RUN sudo git clone https://github.com/vim/vim.git && \
-    cd vim && \
-    sudo git checkout v8.2.2760 && \
-    sudo ./configure \
-        --prefix=/opt/vim/ \
-        --enable-multibyte \
-        --enable-nls \
-        --enable-cscope \
-        --enable-fail-if-missing=yes \
-        --with-features=huge \
-        --without-x \
-        --disable-xim \
-        --disable-gui \
-        --disable-sysmouse \
-        --disable-netbeans \
-        --disable-xsmp && \
-    sudo make install
+# FROM base as vim_builder
+# RUN sudo git clone https://github.com/vim/vim.git && \
+#     cd vim && \
+#     sudo git checkout v8.2.2760 && \
+#     sudo ./configure \
+#         --prefix=/opt/vim/ \
+#         --enable-multibyte \
+#         --enable-nls \
+#         --enable-cscope \
+#         --enable-fail-if-missing=yes \
+#         --with-features=huge \
+#         --without-x \
+#         --disable-xim \
+#         --disable-gui \
+#         --disable-sysmouse \
+#         --disable-netbeans \
+#         --disable-xsmp && \
+#     sudo make install
 
 # mosh builder
 FROM base as mosh_builder
@@ -145,7 +146,7 @@ RUN git clone https://github.com/mobile-shell/mosh.git && \
 
 # code-server builder
 FROM user_base as code_builder
-ENV CODE_SERVER_VERSION=3.11.0
+ENV CODE_SERVER_VERSION=4.0.2
 RUN mkdir -p /home/dev/.local/lib /home/dev/.local/bin && \
     curl -fL https://github.com/cdr/code-server/releases/download/v${CODE_SERVER_VERSION}/code-server-${CODE_SERVER_VERSION}-linux-amd64.tar.gz \
       | tar -C /home/dev/.local/lib -xz && \
@@ -190,7 +191,7 @@ RUN curl -fLo ~/.vim/autoload/plug.vim \
 RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh/zsh-syntax-highlighting
 RUN git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
 RUN git clone https://github.com/denysdovhan/spaceship-prompt ~/.zsh/spaceship-prompt
-RUN git clone https://github.com/zdharma/history-search-multi-word.git ~/.zsh/history-search-multi-word
+RUN git clone https://github.com/zdharma-continuum/history-search-multi-word ~/.zsh/history-search-multi-word
 
 # # vim
 # COPY --from=vim_builder /opt/vim /opt/vim
@@ -223,8 +224,8 @@ COPY pull-secrets.sh $HOME/bin/pull-secrets.sh
 COPY link-secrets.sh $HOME/bin/link-secrets.sh
 RUN git clone https://github.com/ahmetb/kubectx.git ~/.kubectx && \
     mkdir -p ~/.zsh/zsh-completions && \
-    sudo ln -sf ~/.kubectx/completion/kubectx.zsh /usr/local/share/zsh/site-functions/_kubectx && \
-    sudo ln -sf ~/.kubectx/completion/kubens.zsh /usr/local/share/zsh/site-functions/_kubens && \
+    sudo ln -sf ~/.kubectx/completion/_kubectx.zsh /usr/local/share/zsh/site-functions/_kubectx && \
+    sudo ln -sf ~/.kubectx/completion/_kubens.zsh /usr/local/share/zsh/site-functions/_kubens && \
     ln -sf $HOME/.zsh/spaceship-prompt/spaceship.zsh $HOME/.zsh/zsh-completions/prompt_spaceship_setup
 # RUN git clone https://github.com/asdf-vm/asdf.git $HOME/.asdf --branch v0.7.8
 
