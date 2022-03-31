@@ -40,7 +40,7 @@ exec docker run \
     -v ${HOME}/.gnupg:/home/dev/.gnupg \
     -v ${HOME}/.asdf:/home/dev/.asdf \
     -v ${HOME}/.tool-versions:/home/dev/.tool-versions \
-    -v ${HOME}/shared:/home/dev/nfs \
+    --mount type=bind,source="${HOME}/shared",target=/home/dev/shared,bind-propagation=slave \
     -v ${HOME}/old:/home/dev/old \
     -v ${HOME}/.bp:/home/dev/.bp \
     -v ${HOME}/.krew:/home/dev/.krew \
