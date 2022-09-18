@@ -44,6 +44,7 @@ RUN set -x -e && \
         openssh-client \
         openssh-server \
         pkg-config \
+        qemu-utils \
         software-properties-common \
         strace \
         wget \
@@ -90,12 +91,13 @@ RUN curl -sS -o 1password.zip https://cache.agilebits.com/dist/1P/op/pkg/v0.5.5/
 FROM docker:20.10 as docker_builder
 
 # golang builder
-FROM golang:1.17 as golang_builder
+FROM golang:1.19 as golang_builder
 RUN go install golang.org/x/tools/gopls@latest
 RUN go install golang.org/x/tools/cmd/goimports@latest
 RUN go install github.com/nsf/gocode@latest
 RUN go install github.com/x-motemen/ghq@latest
 RUN go install github.com/jstemmer/gotags@latest
+RUN go install github.com/howardjohn/kubectl-resources@latest
 RUN curl -L -o docker-buildx https://github.com/docker/buildx/releases/download/v0.7.1/buildx-v0.7.1.linux-amd64 && \
     chmod +x docker-buildx && \
     mv docker-buildx /usr/local/lib
