@@ -1,5 +1,5 @@
 
-FROM ubuntu:20.04 as base
+FROM ubuntu:22.04 as base
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -30,11 +30,11 @@ RUN set -x -e && \
         libgdbm6 \
         libio-socket-ip-perl \
         libncurses-dev \
-        libprotobuf17 \
-        libreadline6-dev \
+        libprotobuf23 \
+        libreadline-dev \
         libsqlite3-dev \
         libssl-dev \
-        libssl1.1 \
+        libssl3 \
         libstdc++6 \
         libtinfo6 \
         libutempter0 \
@@ -82,10 +82,10 @@ FROM base as user_base
 USER "$USER"
 ENV HOME="/home/$USER"
 
-# install 1password
-FROM ubuntu:20.04 as onepassword_builder
-RUN apt-get update && apt-get install -y curl ca-certificates unzip
-RUN curl -sS -o 1password.zip https://cache.agilebits.com/dist/1P/op/pkg/v0.5.5/op_linux_amd64_v0.5.5.zip && unzip 1password.zip op -d /usr/bin &&  rm 1password.zip
+# # install 1password
+# FROM ubuntu:22.04 as onepassword_builder
+# RUN apt-get update && apt-get install -y curl ca-certificates unzip
+# RUN curl -sS -o 1password.zip https://cache.agilebits.com/dist/1P/op/pkg/v0.5.5/op_linux_amd64_v0.5.5.zip && unzip 1password.zip op -d /usr/bin &&  rm 1password.zip
 
 # docker builder
 FROM docker:20.10 as docker_builder
@@ -98,7 +98,7 @@ RUN go install github.com/nsf/gocode@latest
 RUN go install github.com/x-motemen/ghq@latest
 RUN go install github.com/jstemmer/gotags@latest
 RUN go install github.com/howardjohn/kubectl-resources@latest
-RUN curl -L -o docker-buildx https://github.com/docker/buildx/releases/download/v0.7.1/buildx-v0.7.1.linux-amd64 && \
+RUN curl -L -o docker-buildx https://github.com/docker/buildx/releases/download/v0.9.1/buildx-v0.9.1.linux-amd64 && \
     chmod +x docker-buildx && \
     mv docker-buildx /usr/local/lib
 RUN curl -L -o hey https://hey-release.s3.us-east-2.amazonaws.com/hey_linux_amd64 && \
@@ -193,6 +193,8 @@ RUN curl -fLo ~/.vim/autoload/plug.vim \
 RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh/zsh-syntax-highlighting
 RUN git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
 RUN git clone https://github.com/denysdovhan/spaceship-prompt ~/.zsh/spaceship-prompt
+COPY patches/spaceship.patch /home/dev/.zsh/spaceship-prompt/spaceship.patch
+RUN cd ~/.zsh/spaceship-prompt && ls && git apply spaceship.patch
 RUN git clone https://github.com/zdharma-continuum/history-search-multi-word ~/.zsh/history-search-multi-word
 
 # # vim
@@ -212,8 +214,8 @@ COPY --from=mosh_builder /opt/mosh /opt/mosh
 # tmux
 COPY --from=tmux_builder /opt/tmux/bin/tmux /usr/local/bin/
 
-# onepassword
-COPY --from=onepassword_builder /usr/bin/op /usr/local/bin/
+# # onepassword
+# COPY --from=onepassword_builder /usr/bin/op /usr/local/bin/
 
 # docker
 COPY --from=docker_builder /usr/local/bin/docker /usr/local/bin/
@@ -227,8 +229,7 @@ COPY link-secrets.sh $HOME/bin/link-secrets.sh
 RUN git clone https://github.com/ahmetb/kubectx.git ~/.kubectx && \
     mkdir -p ~/.zsh/zsh-completions && \
     sudo ln -sf ~/.kubectx/completion/_kubectx.zsh /usr/local/share/zsh/site-functions/_kubectx && \
-    sudo ln -sf ~/.kubectx/completion/_kubens.zsh /usr/local/share/zsh/site-functions/_kubens && \
-    ln -sf $HOME/.zsh/spaceship-prompt/spaceship.zsh $HOME/.zsh/zsh-completions/prompt_spaceship_setup
+    sudo ln -sf ~/.kubectx/completion/_kubens.zsh /usr/local/share/zsh/site-functions/_kubens
 # RUN git clone https://github.com/asdf-vm/asdf.git $HOME/.asdf --branch v0.7.8
 
 COPY entrypoint.sh /bin/entrypoint.sh

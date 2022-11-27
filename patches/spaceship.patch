@@ -1,0 +1,13 @@
+diff --git a/sections/jobs.zsh b/sections/jobs.zsh
+index cce188a..fc00b0f 100644
+--- a/sections/jobs.zsh
++++ b/sections/jobs.zsh
+@@ -23,7 +23,7 @@ SPACESHIP_JOBS_AMOUNT_THRESHOLD="${SPACESHIP_JOBS_AMOUNT_THRESHOLD=1}"
+ spaceship_jobs() {
+   [[ $SPACESHIP_JOBS_SHOW == false ]] && return
+
+-  local jobs_amount=${#jobstates}
++  local jobs_amount=$( jobs -d | awk '!/pwd/' | wc -l | tr -d " ")
+
+   [[ $jobs_amount -gt 0 ]] || return
+

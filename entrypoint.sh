@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#set -e
+set -x
 
 echo "Setup ssh"
 mkdir -p ~/.ssh
