@@ -28,6 +28,7 @@ RUN set -x -e && \
         libgdbm-dev \
         libgdbm6 \
         libio-socket-ip-perl \
+        liblzma-dev \
         libncurses-dev \
         libprotobuf23 \
         libreadline-dev \
