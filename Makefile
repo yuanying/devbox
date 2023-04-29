@@ -1,4 +1,4 @@
-IMAGE := yuanying/devbox
+IMAGE := registry.fraction.jp/yuanying/devbox
 
 .PHONY: image
 image:
