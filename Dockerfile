@@ -30,6 +30,7 @@ RUN set -x -e && \
         libio-socket-ip-perl \
         liblzma-dev \
         libncurses-dev \
+        libopenblas-dev \
         libprotobuf23 \
         libreadline-dev \
         libsqlite3-dev \
@@ -127,12 +128,10 @@ FROM user_base as main
 
 # Install user applications
 RUN set -x -e && \
-    sudo add-apt-repository ppa:neovim-ppa/unstable && \
     sudo apt-get update && \
     sudo apt-get install -y \
         bat \
         fzf \
-        neovim \
         silversearcher-ag \
         universal-ctags \
         unzip
@@ -155,6 +154,11 @@ ENV GOPATH="$HOME"
 ENV GHQ_ROOT="$HOME/src"
 
 RUN \
+   if [[ $(dpkg --print-architecture) == "amd64" ]];then \
+     curl -L https://github.com/neovim/neovim/releases/download/v0.9.0/nvim-linux64.tar.gz | sudo sudo tar zx --strip-components 1 -C /usr \
+   else \
+     curl -L https://github.com/uesyn/neovim-arm64-builder/releases/download/v0.9.0/nvim-linux-arm64.tar.gz | sudo sudo tar zx --strip-components 1 -C /usr \
+   fi \
    sudo update-alternatives --install /usr/bin/vi vi /usr/bin/nvim 60 && \
    sudo update-alternatives --config vi && \
    sudo update-alternatives --install /usr/bin/vim vim /usr/bin/nvim 60 && \
