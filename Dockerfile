@@ -155,9 +155,9 @@ ENV GHQ_ROOT="$HOME/src"
 
 RUN \
    if [[ $(dpkg --print-architecture) == "amd64" ]];then \
-     curl -L https://github.com/neovim/neovim/releases/download/v0.9.0/nvim-linux64.tar.gz | sudo sudo tar zx --strip-components 1 -C /usr \
+     curl -L https://github.com/neovim/neovim/releases/download/v0.9.0/nvim-linux64.tar.gz | sudo sudo tar zx --strip-components 1 -C /usr; \
    else \
-     curl -L https://github.com/uesyn/neovim-arm64-builder/releases/download/v0.9.0/nvim-linux-arm64.tar.gz | sudo sudo tar zx --strip-components 1 -C /usr \
+     curl -L https://github.com/uesyn/neovim-arm64-builder/releases/download/v0.9.0/nvim-linux-arm64.tar.gz | sudo sudo tar zx --strip-components 1 -C /usr; \
    fi
 RUN \
    sudo update-alternatives --install /usr/bin/vi vi /usr/bin/nvim 60 && \

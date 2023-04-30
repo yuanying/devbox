@@ -1,5 +1,5 @@
-UNAME_M := $(shell uname -p)
-IMAGE := registry.fraction.jp/yuanying/devbox-$(UNAME_M)
+ARCH := $(shell dpkg --print-architecture)
+IMAGE := registry.fraction.jp/yuanying/devbox-$(ARCH)
 
 .PHONY: image
 image:
