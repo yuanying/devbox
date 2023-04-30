@@ -158,7 +158,8 @@ RUN \
      curl -L https://github.com/neovim/neovim/releases/download/v0.9.0/nvim-linux64.tar.gz | sudo sudo tar zx --strip-components 1 -C /usr \
    else \
      curl -L https://github.com/uesyn/neovim-arm64-builder/releases/download/v0.9.0/nvim-linux-arm64.tar.gz | sudo sudo tar zx --strip-components 1 -C /usr \
-   fi \
+   fi
+RUN \
    sudo update-alternatives --install /usr/bin/vi vi /usr/bin/nvim 60 && \
    sudo update-alternatives --config vi && \
    sudo update-alternatives --install /usr/bin/vim vim /usr/bin/nvim 60 && \
