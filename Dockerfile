@@ -74,7 +74,7 @@ RUN set -x -e && \
     apt-get -y install sudo && \
     groupadd -g 999 docker && \
     groupadd -g 998 docker2 && \
-    useradd -G docker,docker2 -g 50 -m -s /bin/bash  -u 501 "$USER" && \
+    useradd -G video,docker,docker2 -g 50 -m -s /bin/bash  -u 501 "$USER" && \
     echo "$USER ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 FROM base as user_base
