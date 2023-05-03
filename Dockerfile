@@ -115,23 +115,15 @@ RUN git clone https://github.com/tmux/tmux.git && \
     mkdir -p /opt/tmux/bin && \
     mv tmux /opt/tmux/bin
 
-# mosh builder
-FROM base as mosh_builder
-RUN apt-get update && apt-get install -y automake libtool g++ protobuf-compiler libprotobuf-dev libboost-dev libutempter-dev zlib1g-dev libio-pty-perl libssl-dev pkg-config
-RUN git clone https://github.com/mobile-shell/mosh.git && \
-    cd mosh && \
-    ./autogen.sh && \
-    ./configure \
-      --prefix=/opt/mosh/ && \
-    make install
-
 # main
 FROM user_base as main
 
 # Install user applications
 RUN set -x -e && \
+    sudo add-apt-repository -y ppa:keithw/mosh-dev && \
     sudo apt-get update && \
     sudo apt-get install -y \
+	    mosh \
         bat \
         fzf \
         silversearcher-ag \
@@ -168,9 +160,6 @@ RUN \
    sudo update-alternatives --config vim && \
    sudo update-alternatives --install /usr/bin/editor editor /usr/bin/nvim 60 && \
    sudo update-alternatives --config editor
-
-# mosh
-COPY --from=mosh_builder /opt/mosh /opt/mosh
 
 # tmux
 COPY --from=tmux_builder /opt/tmux/bin/tmux /usr/local/bin/
