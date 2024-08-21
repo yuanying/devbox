@@ -22,4 +22,11 @@ exec docker run \
     -p 9090:9090 \
     -p 3222:3222 \
     -p 60000-60010:60000-60010/udp \
+    --add-host braque:192.168.1.131 \
+    --add-host chirico:192.168.1.83 \
+    --add-host ducump:192.168.1.135 \
+    --add-host pablo:192.168.1.134 \
+    --add-host pablo:192.168.1.134 \
+    --add-host poissonnerie:192.168.1.151 \
+    --add-host uribo:192.168.1.152 \
     yuanying/devbox
