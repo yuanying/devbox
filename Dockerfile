@@ -89,26 +89,22 @@ ENV HOME="/home/$USER"
 FROM docker:20.10 as docker_builder
 
 # golang builder
-FROM golang:1.20 as golang_builder
+FROM golang:1.22 as golang_builder
 RUN go install golang.org/x/tools/gopls@latest
 RUN go install golang.org/x/tools/cmd/goimports@latest
 RUN go install github.com/nsf/gocode@latest
 RUN go install github.com/x-motemen/ghq@latest
 RUN go install github.com/jstemmer/gotags@latest
-RUN go install github.com/howardjohn/kubectl-resources@latest
 RUN go install github.com/gopasspw/gopass@latest
-RUN curl -L -o docker-buildx https://github.com/docker/buildx/releases/download/v0.10.4/buildx-v0.10.4.linux-amd64 && \
+RUN curl -L -o docker-buildx https://github.com/docker/buildx/releases/download/v0.15.1/buildx-v0.15.1.linux-amd64 && \
     chmod +x docker-buildx && \
     mv docker-buildx /usr/local/lib
-RUN curl -L -o hey https://hey-release.s3.us-east-2.amazonaws.com/hey_linux_amd64 && \
-    chmod +x hey && \
-    mv hey /go/bin
 
 # tmux builder
 FROM base as tmux_builder
 RUN git clone https://github.com/tmux/tmux.git && \
     cd tmux && \
-    git checkout 3.2 && \
+    git checkout 3.4 && \
     sh autogen.sh && \
     ./configure && \
     make && \
@@ -148,11 +144,7 @@ ENV GOPATH="$HOME"
 ENV GHQ_ROOT="$HOME/src"
 
 RUN \
-   if [[ $(dpkg --print-architecture) == "amd64" ]];then \
-     curl -L https://github.com/neovim/neovim/releases/download/v0.9.0/nvim-linux64.tar.gz | sudo sudo tar zx --strip-components 1 -C /usr; \
-   else \
-     curl -L https://github.com/uesyn/neovim-arm64-builder/releases/download/v0.9.0/nvim-linux-arm64.tar.gz | sudo sudo tar zx --strip-components 1 -C /usr; \
-   fi
+     curl -L https://github.com/neovim/neovim/releases/download/v0.10.0/nvim-linux64.tar.gz | sudo sudo tar zx --strip-components 1 -C /usr
 RUN \
    sudo update-alternatives --install /usr/bin/vi vi /usr/bin/nvim 60 && \
    sudo update-alternatives --config vi && \
