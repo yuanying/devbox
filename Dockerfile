@@ -123,6 +123,8 @@ RUN set -x -e && \
         bat \
         fzf \
         silversearcher-ag \
+        ripgrep \
+        fd-find \
         universal-ctags \
         unzip
 
