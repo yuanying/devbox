@@ -29,4 +29,5 @@ exec docker run \
     --add-host pablo:192.168.1.134 \
     --add-host poissonnerie:192.168.1.151 \
     --add-host uribo:192.168.1.152 \
-    yuanying/devbox
+    --add-host simone:192.168.1.153 \
+    registry.fraction.jp/yuanying/devbox-amd64

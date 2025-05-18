@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 as base
+FROM ubuntu:24.04 as base
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -27,13 +27,15 @@ RUN set -x -e && \
         libgcc-s1 \
         libgdbm-dev \
         libgdbm6 \
+        libgl1 \
+        libgoogle-perftools-dev \
         libio-socket-ip-perl \
         libjpeg-dev \
         liblzma-dev \
         libncurses-dev \
         libopenblas-dev \
         libpng-dev \
-        libprotobuf23 \
+        libprotobuf-dev \
         libreadline-dev \
         libsqlite3-dev \
         libssl-dev \
@@ -75,9 +77,9 @@ ENV USER=yuanying
 RUN set -x -e && \
     apt-get update && \
     apt-get -y install sudo && \
-    groupadd -g 999 docker && \
-    groupadd -g 998 docker2 && \
-    useradd -G video,docker,docker2 -g 50 -m -s /bin/bash  -u 501 "$USER" && \
+    # groupadd -g 999 docker && \
+    # groupadd -g 998 docker2 && \
+    useradd -G video,systemd-journal,systemd-network,systemd-timesync -g 50 -m -s /bin/bash  -u 501 "$USER" && \
     echo "$USER ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 FROM base as user_base
@@ -89,14 +91,13 @@ ENV HOME="/home/$USER"
 FROM docker:20.10 as docker_builder
 
 # golang builder
-FROM golang:1.22 as golang_builder
+FROM golang:1.24 as golang_builder
 RUN go install golang.org/x/tools/gopls@latest
 RUN go install golang.org/x/tools/cmd/goimports@latest
 RUN go install github.com/nsf/gocode@latest
 RUN go install github.com/x-motemen/ghq@latest
 RUN go install github.com/jstemmer/gotags@latest
-RUN go install github.com/gopasspw/gopass@latest
-RUN curl -L -o docker-buildx https://github.com/docker/buildx/releases/download/v0.15.1/buildx-v0.15.1.linux-amd64 && \
+RUN curl -L -o docker-buildx https://github.com/docker/buildx/releases/download/v0.23.0/buildx-v0.23.0.linux-amd64 && \
     chmod +x docker-buildx && \
     mv docker-buildx /usr/local/lib
 
@@ -104,7 +105,7 @@ RUN curl -L -o docker-buildx https://github.com/docker/buildx/releases/download/
 FROM base as tmux_builder
 RUN git clone https://github.com/tmux/tmux.git && \
     cd tmux && \
-    git checkout 3.4 && \
+    git checkout 3.5a && \
     sh autogen.sh && \
     ./configure && \
     make && \
@@ -116,7 +117,6 @@ FROM user_base as main
 
 # Install user applications
 RUN set -x -e && \
-    sudo add-apt-repository -y ppa:keithw/mosh-dev && \
     sudo apt-get update && \
     sudo apt-get install -y \
 	    mosh \
@@ -146,7 +146,7 @@ ENV GOPATH="$HOME"
 ENV GHQ_ROOT="$HOME/src"
 
 RUN \
-     curl -L https://github.com/neovim/neovim/releases/download/v0.10.0/nvim-linux64.tar.gz | sudo sudo tar zx --strip-components 1 -C /usr
+     curl -L https://github.com/neovim/neovim/releases/download/v0.11.1/nvim-linux64.tar.gz | sudo sudo tar zx --strip-components 1 -C /usr
 RUN \
    sudo update-alternatives --install /usr/bin/vi vi /usr/bin/nvim 60 && \
    sudo update-alternatives --config vi && \
