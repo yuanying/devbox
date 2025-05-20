@@ -1,4 +1,6 @@
-FROM rocm/dev-ubuntu-24.04:6.4 as base
+# FROM rocm/dev-ubuntu-24.04:6.4 as base
+# FROM ghcr.io/rocm/therock_pytorch_dev_ubuntu_24_04_gfx1151:nightly as base
+FROM ubuntu:24.04 as base
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -17,6 +19,7 @@ RUN set -x -e && \
         dnsutils \
         file \
         git \
+        git-lfs \
         iproute2 \
         iputils-ping \
         jq \
@@ -48,6 +51,7 @@ RUN set -x -e && \
         net-tools \
         openssh-client \
         openssh-server \
+        pciutils \
         pkg-config \
         qemu-utils \
         software-properties-common \
@@ -112,8 +116,25 @@ RUN git clone https://github.com/tmux/tmux.git && \
     mkdir -p /opt/tmux/bin && \
     mv tmux /opt/tmux/bin
 
+FROM ghcr.io/rocm/therock_pytorch_dev_ubuntu_24_04_gfx1151:pytorch_build AS pytorch_build
+
 # main
 FROM user_base as main
+
+# rocm
+COPY --from=pytorch_build /opt/rocm /opt/rocm
+# Setup environment.
+ENV PATH="/opt/rocm/bin:$PATH"
+RUN (echo "/opt/rocm/lib" | sudo tee  /etc/ld.so.conf.d/rocm.conf) && \
+    (echo "/opt/rocm/lib/rocm_sysdeps/lib" | sudo tee -a /etc/ld.so.conf.d/rocm.conf) && \
+    sudo ldconfig -v
+
+# pytorch
+# Bind mount the prior stage and install the wheel directly (saves the size of
+# the wheel vs copying).
+COPY --from=pytorch_build /therock/pytorch/dist /therock/pytorch/dist
+COPY --from=pytorch_build /therock/pytorch_vision/dist /therock/pytorch_vision/dist
+COPY --from=pytorch_build /therock/pytorch_audio/dist /therock/pytorch_audio/dist
 
 # Install user applications
 RUN set -x -e && \
@@ -121,12 +142,22 @@ RUN set -x -e && \
     sudo apt-get install -y \
 	    mosh \
         bat \
+        cmake \
+        ccache \
+        libcurl4-openssl-dev \
         fzf \
         silversearcher-ag \
         ripgrep \
         fd-find \
         universal-ctags \
         unzip
+
+# Install Valkun
+RUN set -x -e && \
+    wget -qO - https://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add - && \
+    sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-1.4.313-noble.list https://packages.lunarg.com/vulkan/1.4.313/lunarg-vulkan-1.4.313-noble.list && \
+    sudo apt update &&\
+    sudo apt install -y vulkan-sdk
 
 # golang
 COPY --from=golang_builder /usr/local/go /usr/local/go

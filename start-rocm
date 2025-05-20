@@ -12,7 +12,6 @@ exec docker run \
     --privileged \
     --security-opt seccomp=unconfined \
     --group-add video \
-    --group-add render \
     -it \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v /lib/modules:/lib/modules \
