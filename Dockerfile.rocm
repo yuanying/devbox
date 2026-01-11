@@ -1,6 +1,7 @@
 # FROM rocm/dev-ubuntu-24.04:6.4 as base
+FROM rocm/dev-ubuntu-24.04:7.0.2-complete as base
 # FROM ghcr.io/rocm/therock_pytorch_dev_ubuntu_24_04_gfx1151:nightly as base
-FROM ubuntu:24.04 as base
+# FROM ubuntu:24.04 as base
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -25,6 +26,7 @@ RUN set -x -e && \
         jq \
         libbz2-dev \
         libc6 \
+        libcairo2-dev \
         libevent-dev \
         libffi-dev \
         libgcc-s1 \
@@ -82,8 +84,10 @@ RUN set -x -e && \
     apt-get update && \
     apt-get -y install sudo && \
     groupadd -g 993 render2 && \
-    # groupadd -g 998 docker2 && \
-    useradd -G video,render2,systemd-journal,systemd-network,systemd-timesync -g 50 -m -s /bin/bash  -u 501 "$USER" && \
+    groupadd -g 988 docker2 && \
+    echo "yuanying:100000:65536" >> /etc/subuid && \
+    echo "yuanying:100000:65536" >> /etc/subgid && \
+    useradd -G video,render,render2,docker2,systemd-journal,systemd-network,systemd-timesync -g 50 -m -s /bin/bash  -u 501 "$USER" && \
     echo "$USER ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 FROM base as user_base
@@ -92,10 +96,11 @@ USER "$USER"
 ENV HOME="/home/$USER"
 
 # docker builder
-FROM docker:20.10 as docker_builder
+# FROM docker:20.10 as docker_builder
+FROM docker:28-cli as docker_builder
 
 # golang builder
-FROM golang:1.24 as golang_builder
+FROM golang:1.25 as golang_builder
 RUN go install golang.org/x/tools/gopls@latest
 RUN go install golang.org/x/tools/cmd/goimports@latest
 RUN go install github.com/nsf/gocode@latest
@@ -116,25 +121,27 @@ RUN git clone https://github.com/tmux/tmux.git && \
     mkdir -p /opt/tmux/bin && \
     mv tmux /opt/tmux/bin
 
-FROM ghcr.io/rocm/therock_pytorch_dev_ubuntu_24_04_gfx1151:pytorch_build AS pytorch_build
+# FROM rocm-fedora-gfx1151:latest AS pytorch_build
+# FROM ghcr.io/rocm/therock_pytorch_dev_ubuntu_24_04_gfx1151:pytorch_build AS pytorch_build
 
 # main
 FROM user_base as main
 
-# rocm
-COPY --from=pytorch_build /opt/rocm /opt/rocm
-# Setup environment.
-ENV PATH="/opt/rocm/bin:$PATH"
-RUN (echo "/opt/rocm/lib" | sudo tee  /etc/ld.so.conf.d/rocm.conf) && \
-    (echo "/opt/rocm/lib/rocm_sysdeps/lib" | sudo tee -a /etc/ld.so.conf.d/rocm.conf) && \
-    sudo ldconfig -v
+# # rocm
+# COPY --from=localhost/pytorch-vision-dev-f41:latest /opt/rocm /opt/rocm
+# # Setup environment.
+# ENV PATH="/opt/rocm/bin:$PATH"
+# RUN (echo "/opt/rocm/lib" | sudo tee  /etc/ld.so.conf.d/rocm.conf) && \
+#     (echo "/opt/rocm/lib/rocm_sysdeps/lib" | sudo tee -a /etc/ld.so.conf.d/rocm.conf) && \
+#     sudo ldconfig -v
 
-# pytorch
-# Bind mount the prior stage and install the wheel directly (saves the size of
-# the wheel vs copying).
-COPY --from=pytorch_build /therock/pytorch/dist /therock/pytorch/dist
-COPY --from=pytorch_build /therock/pytorch_vision/dist /therock/pytorch_vision/dist
-COPY --from=pytorch_build /therock/pytorch_audio/dist /therock/pytorch_audio/dist
+# # pytorch
+# # Bind mount the prior stage and install the wheel directly (saves the size of
+# # the wheel vs copying).
+# # COPY --from=pytorch_build /therock/pytorch/dist /therock/pytorch/dist
+# # COPY --from=pytorch_build /therock/pytorch_vision/dist /therock/pytorch_vision/dist
+# # COPY --from=pytorch_build /therock/pytorch_audio/dist /therock/pytorch_audio/dist
+# COPY --from=localhost/pytorch-vision-dev-f41:latest /opt/*.whl /therock/pytorch/dist/
 
 # Install user applications
 RUN set -x -e && \
@@ -150,14 +157,18 @@ RUN set -x -e && \
         ripgrep \
         fd-find \
         universal-ctags \
+        # podman
+        podman uidmap slirp4netns \
+        # stable-diffusion pytorch
+        libomp-dev libjpeg62 \
         unzip
 
-# Install Valkun
-RUN set -x -e && \
-    wget -qO - https://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add - && \
-    sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-1.4.313-noble.list https://packages.lunarg.com/vulkan/1.4.313/lunarg-vulkan-1.4.313-noble.list && \
-    sudo apt update &&\
-    sudo apt install -y vulkan-sdk
+# Install Vulkun
+# RUN set -x -e && \
+#     wget -qO - https://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add - && \
+#     sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-1.4.313-noble.list https://packages.lunarg.com/vulkan/1.4.313/lunarg-vulkan-1.4.313-noble.list && \
+#     sudo apt update &&\
+#     sudo apt install -y vulkan-sdk
 
 # golang
 COPY --from=golang_builder /usr/local/go /usr/local/go

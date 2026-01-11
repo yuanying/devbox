@@ -5,13 +5,16 @@ set -e
 ROOT=$(dirname "${BASH_SOURCE}")
 
 exec docker run \
-    --rm \
     -d \
     --name devbox \
     --hostname="$(hostname)" \
     --privileged \
+    --cap-add=SYS_PTRACE \
     --security-opt seccomp=unconfined \
     --group-add video \
+    --group-add render \
+    --ipc=host \
+    --restart always \
     -it \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v /lib/modules:/lib/modules \
@@ -32,4 +35,4 @@ exec docker run \
     --add-host poissonnerie:192.168.1.151 \
     --add-host uribo:192.168.1.152 \
     --add-host simone:192.168.1.153 \
-    registry.fraction.jp/yuanying/devbox-rocm
+    registry.fraction.jp/yuanying/devbox:rocm
