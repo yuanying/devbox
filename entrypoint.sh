@@ -35,8 +35,6 @@ mkdir -p ~/.zsh/zsh-completions
 sudo ln -sf /opt/kubectx/completion/_kubectx.zsh /usr/local/share/zsh/site-functions/_kubectx
 sudo ln -sf /opt/kubectx/completion/_kubens.zsh /usr/local/share/zsh/site-functions/_kubens
 
-git clone https://github.com/asdf-vm/asdf.git $HOME/.asdf --branch v0.18.0
-
 echo "Clone dotfiles and setup"
 git clone https://github.com/yuanying/dotfiles ~/dotfiles
 cd ~/dotfiles
