@@ -146,7 +146,7 @@ ENV GOPATH="$HOME"
 ENV GHQ_ROOT="$HOME/src"
 
 RUN \
-     curl -L https://github.com/neovim/neovim/releases/download/v0.11.1/nvim-linux64.tar.gz | sudo sudo tar zx --strip-components 1 -C /usr
+     curl -L https://github.com/neovim/neovim/releases/download/v0.11.1/nvim-linux-x86_64.tar.gz | sudo sudo tar zx --strip-components 1 -C /usr
 RUN \
    sudo update-alternatives --install /usr/bin/vi vi /usr/bin/nvim 60 && \
    sudo update-alternatives --config vi && \
