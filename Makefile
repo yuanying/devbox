@@ -11,3 +11,9 @@ arm64:
 			-f Dockerfile.arm64 \
 			--target user_base -t $(IMAGE)-arm64:user_base \
 			--target main -t $(IMAGE)-arm64 .
+.PHONY: rocm
+rocm:
+		docker build \
+			-f Dockerfile.rocm \
+			--target user_base -t $(IMAGE)-rocm:user_base \
+			--target main -t $(IMAGE)-rocm .
