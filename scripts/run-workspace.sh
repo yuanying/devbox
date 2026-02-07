@@ -55,7 +55,7 @@ if docker ps -a --format '{{.Names}}' | grep -Eq "^${WORKSPACE_NAME}\$"; then
 fi
 
 ENV_FLAG=""
-if ${DEV_BOX_TAG} == "cuda"; then
+if [[ ${DEV_BOX_TAG} == "cuda" ]]; then
     ENV_FLAG="--gpus all"
 fi
 

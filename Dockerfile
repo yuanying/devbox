@@ -63,6 +63,7 @@ RUN set -x -e && \
         pciutils \
         pkg-config \
         qemu-utils \
+        rsync \
         software-properties-common \
         strace \
         wget \
