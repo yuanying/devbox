@@ -1,4 +1,14 @@
-FROM ubuntu:24.04 as base
+# ==============================================================================
+# Unified Dockerfile - CPU/CUDA/ROCm
+# ==============================================================================
+# Build examples:
+#   CPU:  docker build --build-arg BASE_IMAGE=ubuntu:24.04 -t devbox:cpu .
+#   CUDA: docker build --build-arg BASE_IMAGE=nvidia/cuda:13.1.0-devel-ubuntu24.04 --network host -t devbox:cuda .
+#   ROCm: docker build --build-arg BASE_IMAGE=rocm/dev-ubuntu-24.04:7.0.2-complete -t devbox:rocm .
+# ==============================================================================
+
+ARG BASE_IMAGE=ubuntu:24.04
+FROM ${BASE_IMAGE} as base
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -17,11 +27,13 @@ RUN set -x -e && \
         dnsutils \
         file \
         git \
+        git-lfs \
         iproute2 \
         iputils-ping \
         jq \
         libbz2-dev \
         libc6 \
+        libcairo2-dev \
         libevent-dev \
         libffi-dev \
         libgcc-s1 \
@@ -48,6 +60,7 @@ RUN set -x -e && \
         net-tools \
         openssh-client \
         openssh-server \
+        pciutils \
         pkg-config \
         qemu-utils \
         software-properties-common \
@@ -77,9 +90,12 @@ ENV USER=yuanying
 RUN set -x -e && \
     apt-get update && \
     apt-get -y install sudo && \
-    # groupadd -g 999 docker && \
-    # groupadd -g 998 docker2 && \
-    useradd -G video,systemd-journal,systemd-network,systemd-timesync -g 50 -m -s /bin/bash  -u 501 "$USER" && \
+    (getent group render > /dev/null || groupadd -g 110 render) && \
+    (getent group render2 > /dev/null || groupadd -g 993 render2) && \
+    (getent group docker > /dev/null || groupadd -g 988 docker) && \
+    echo "yuanying:100000:65536" >> /etc/subuid && \
+    echo "yuanying:100000:65536" >> /etc/subgid && \
+    useradd -G video,render,render2,docker,systemd-journal,systemd-network,systemd-timesync -g 50 -m -s /bin/zsh -u 501 "$USER" && \
     echo "$USER ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 FROM base as user_base
@@ -88,7 +104,7 @@ USER "$USER"
 ENV HOME="/home/$USER"
 
 # docker builder
-FROM docker:20.10 as docker_builder
+FROM docker:28-cli as docker_builder
 
 # golang builder
 FROM golang:1.25 as golang_builder
@@ -97,7 +113,7 @@ RUN go install golang.org/x/tools/cmd/goimports@latest
 RUN go install github.com/nsf/gocode@latest
 RUN go install github.com/x-motemen/ghq@latest
 RUN go install github.com/jstemmer/gotags@latest
-Run go install github.com/asdf-vm/asdf/cmd/asdf@v0.18.0
+RUN go install github.com/asdf-vm/asdf/cmd/asdf@v0.18.0
 RUN curl -L -o docker-buildx https://github.com/docker/buildx/releases/download/v0.23.0/buildx-v0.23.0.linux-amd64 && \
     chmod +x docker-buildx && \
     mv docker-buildx /usr/local/lib
@@ -122,11 +138,18 @@ RUN set -x -e && \
     sudo apt-get install -y \
 	    mosh \
         bat \
+        cmake \
+        ccache \
+        libcurl4-openssl-dev \
         fzf \
         silversearcher-ag \
         ripgrep \
         fd-find \
         universal-ctags \
+        # podman
+        podman uidmap slirp4netns \
+        # stable-diffusion pytorch
+        libomp-dev libjpeg62 \
         unzip
 
 # golang
@@ -166,8 +189,6 @@ RUN \
     sudo git clone https://github.com/ahmetb/kubectx /opt/kubectx && \
     sudo ln -s /opt/kubectx/kubectx /usr/local/bin/kubectx && \
     sudo ln -s /opt/kubectx/kubens /usr/local/bin/kubens
-
-# RUN git clone https://github.com/asdf-vm/asdf.git $HOME/.asdf --branch v0.7.8
 
 COPY entrypoint.sh /bin/entrypoint.sh
 RUN sudo chmod +x /bin/entrypoint.sh
