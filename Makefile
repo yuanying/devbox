@@ -17,3 +17,10 @@ rocm:
 			-f Dockerfile.rocm \
 			--target user_base -t $(IMAGE)-rocm:user_base \
 			--target main -t $(IMAGE)-rocm .
+.PHONY: cuda
+cuda:
+		docker build \
+			-f Dockerfile.cuda \
+			--network host \
+			--target user_base -t $(IMAGE)-cuda:user_base \
+			--target main -t $(IMAGE)-cuda .

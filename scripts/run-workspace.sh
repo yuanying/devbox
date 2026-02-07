@@ -14,9 +14,10 @@
 set -e
 
 IPV6_SEGMENT=${1:-10}
+DEV_BOX_TAG=${DEV_BOX_TAG:-"rocm"}
 
 IPv6_ADDRESS="${IPV6_DEV_NETWORK}${IPV6_SEGMENT}"
-WORKSPACE_NAME="ws${IPV6_SEGMENT}"
+WORKSPACE_NAME="$(hostname)-${IPV6_SEGMENT}"
 WORKSPACE_DIR="$HOME/workspaces/$WORKSPACE_NAME"
 
 ESSENTIAL_FILES=(".ssh" ".zsh" "dotfiles")
@@ -53,6 +54,11 @@ if docker ps -a --format '{{.Names}}' | grep -Eq "^${WORKSPACE_NAME}\$"; then
     exit 0
 fi
 
+ENV_FLAG=""
+if ${DEV_BOX_TAG} == "cuda"; then
+    ENV_FLAG="--gpus all"
+fi
+
 exec docker run \
     -d \
     --name $WORKSPACE_NAME \
@@ -62,6 +68,7 @@ exec docker run \
     --security-opt seccomp=unconfined \
     --group-add video \
     --group-add render \
+    ${ENV_FLAG} \
     --ipc=host \
     --restart always \
     -it \
@@ -81,4 +88,4 @@ exec docker run \
     --add-host poissonnerie:192.168.1.151 \
     --add-host uribo:192.168.1.152 \
     --add-host simone:192.168.1.153 \
-    registry.fraction.jp/yuanying/devbox:rocm
+    registry.fraction.jp/yuanying/devbox-${DEV_BOX_TAG}
